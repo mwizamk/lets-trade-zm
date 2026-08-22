@@ -298,3 +298,54 @@ $("submitOrder")?.addEventListener("click", createOrder);
 loadPriceList();
 loadPaymentMethods();
 loadDashboard();
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// Your firebaseConfig here
+const firebaseConfig = {
+  apiKey: "AIzaSyA09R5oFLuSPRzLc58dUHamFW0NB8P2M1Q",
+  authDomain: "lets-trade-zm-488d9.firebaseapp.com",
+  projectId: "lets-trade-zm-488d9",
+  storageBucket: "lets-trade-zm-488d9.firebasestorage.app",
+  messagingSenderId: "702125763072",
+  appId: "1:702125763072:web:ymU4YWIyZWYtZTdiYS00YjBhLTk5NjQtZDJjODVlMjdiMzM4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function quickSeedDatabase() {
+  const seedData = {
+    "priceList/netflix_premium_shared": {
+      service: "Netflix", 
+      package: "Premium", 
+      ownership: "shared",
+      price: 65, 
+      currency: "ZMW", 
+      durationDays: 30,
+      description: "Netflix Premium shared slot", 
+      visibleInPriceList: true, 
+      status: "active", 
+      notes: ""
+    },
+    "paymentMethods/airtel_money": {
+      methodName: "Airtel Money", 
+      accountName: "Plug MK", 
+      accountNumber: "0979276543",
+      instructions: "Pay the exact order total, then call admin for verification.", 
+      available: true, 
+      displayOrder: 1, 
+      notes: ""
+    }
+  };
+
+  for (const [path, data] of Object.entries(seedData)) {
+    const [collectionName, docId] = path.split("/");
+    await setDoc(doc(db, collectionName, docId), data);
+  }
+  console.log("Database populated successfully!");
+}
+
+// Run it once on load
+quickSeedDatabase();
