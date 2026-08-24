@@ -1,23 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin Portal — Let's Trade ZM</title>
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
+<title>Admin Portal | Let's Trade ZM</title>
+
 <link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
+
 <main class="wrap">
-<h1>Admin Portal</h1>
-<section>
-<h2>Pending Payments</h2>
-<div id="payments"></div>
+
+<h1>Let's Trade ZM</h1>
+
+<h2>Admin Portal</h2>
+
+<p>
+Manage your PriceList and orders.
+</p>
+
+
+<!-- DATABASE INITIALIZATION -->
+
+<section class="admin-card">
+
+<h2>Database</h2>
+
+<p>
+Use this once to create the starter records automatically.
+</p>
+
+<button
+  id="seedDatabase"
+>
+Initialize Database
+</button>
+
 </section>
-<section>
-<h2>Pending Expiry</h2>
-<div id="notifications"></div>
+
+
+<!-- PRICELIST FORM -->
+
+<section class="admin-card">
+
+<h2>Add / Edit PriceList</h2>
+
+<form id="priceForm">
+
+<input
+  type="hidden"
+  id="priceId"
+>
+
+
+<label>
+Service
+</label>
+
+<input
+  id="service"
+  placeholder="Netflix"
+  required
+>
+
+
+<label>
+Package
+</label>
+
+<input
+  id="packageName"
+  placeholder="Premium"
+  required
+>
+
+
+<label>
+Ownership
+</label>
+
+<select id="ownership">
+
+<option value="shared">
+Shared
+</option>
+
+<option value="private">
+Private
+</option>
+
+</select>
+
+
+<label>
+Price
+</label>
+
+<input
+  id="price"
+  type="number"
+  min="0"
+  step="0.01"
+  placeholder="65"
+  required
+>
+
+
+<label>
+Duration
+</label>
+
+<input
+  id="durationDays"
+  type="number"
+  min="1"
+  value="30"
+  required
+>
+
+
+<label>
+Description
+</label>
+
+<textarea
+  id="description"
+  placeholder="Service description"
+></textarea>
+
+
+<label>
+Status
+</label>
+
+<select id="priceStatus">
+
+<option value="active">
+Active
+</option>
+
+<option value="inactive">
+Inactive
+</option>
+
+</select>
+
+
+<button type="submit">
+Save Service
+</button>
+
+</form>
+
 </section>
+
+
+<!-- CURRENT PRICELIST -->
+
+<section class="admin-card">
+
+<h2>Current PriceList</h2>
+
+<div id="adminPrices">
+
+Loading...
+
+</div>
+
+</section>
+
+
+<!-- ORDERS -->
+
+<section class="admin-card">
+
+<h2>Orders</h2>
+
+<div id="adminOrders">
+
+Loading...
+
+</div>
+
+</section>
+
+
 </main>
-<script type="module" src="app.js"></script>
+
+
+<script
+  type="module"
+  src="app.js"
+></script>
+
 </body>
+
 </html>
