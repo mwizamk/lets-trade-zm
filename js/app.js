@@ -1,1 +1,0 @@
-document.querySelectorAll('.select-service').forEach(button=>button.addEventListener('click',()=>{sessionStorage.setItem('selectedPrice',JSON.stringify({id:button.dataset.id,service:button.dataset.service,package:button.dataset.package,price:Number(button.dataset.price),ownership:button.dataset.ownership||'shared'}));location.href='signup.html';}));
