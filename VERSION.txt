@@ -1,3 +1,0 @@
-0.2.0-workflow
-Browser/sessionStorage workflow release.
-No Firebase connection or database writes.
