@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#11162d">
+  <title>Let's Trade ZM — Subscriptions Made Simple</title>
+  <link rel="stylesheet" href="./css/style.css?v=0.4.0">
+</head>
+<body>
+<header class="header">
+  <div class="container nav-wrap">
+    <a class="logo" href="#">
+      <span class="logo-box">LT</span>
+      <span>LET'S TRADE <em>ZM</em></span>
+    </a>
+    <button class="menu" id="menu" aria-label="Menu">☰</button>
+    <nav id="nav">
+      <a href="#services">PriceList</a>
+      <a href="#how">How it works</a>
+      <a href="#support">Contact</a>
+      <a class="signin" href="#">Sign in</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="orb orb-a"></div><div class="orb orb-b"></div>
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <div class="eyebrow">LET'S TRADE ZM • SUBSCRIPTIONS</div>
+      <h1>Everything you watch.<br><span>One simple place.</span></h1>
+      <p>Choose the services you want. Select multiple subscriptions in one order and see your total instantly.</p>
+      <div class="hero-buttons">
+        <a class="primary" href="#services">Browse services <b>↓</b></a>
+        <a class="secondary" href="#how">How it works <b>→</b></a>
+      </div>
+      <div class="trust"><span>✓</span> Select multiple services</div>
+    </div>
+    <div class="preview">
+      <div class="preview-head"><span>POPULAR SERVICES</span><i>● AVAILABLE</i></div>
+      <div class="preview-row"><span class="icon red">N</span><div><b>Netflix</b><small>Entertainment</small></div><strong>K65</strong></div>
+      <div class="preview-row"><span class="icon blue">P</span><div><b>Prime Video</b><small>Entertainment</small></div><strong>K80</strong></div>
+      <div class="preview-row"><span class="icon green">S</span><div><b>Spotify</b><small>Music</small></div><strong>K65</strong></div>
+      <div class="preview-total"><span>Example selection</span><b>K210</b></div>
+    </div>
+  </div>
+</section>
+
+<section class="services" id="services">
+  <div class="container">
+    <div class="heading">
+      <div><label>PRICELIST</label><h2>Choose your services</h2><p>Select one or more services. Your total updates instantly.</p></div>
+      <span class="count" id="count">0 selected</span>
+    </div>
+    <div class="tabs">
+      <button class="active" data-cat="all">All services</button>
+      <button data-cat="streaming">Streaming</button>
+      <button data-cat="music">Music</button>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="container">
+    <div class="center heading"><div><label>HOW IT WORKS</label><h2>Simple from start to finish</h2><p>Pick what you need and continue.</p></div></div>
+    <div class="steps">
+      <article><span>01</span><h3>Choose</h3><p>Select one or multiple subscription services.</p></article>
+      <article><span>02</span><h3>Review</h3><p>Check your selected services and total.</p></article>
+      <article><span>03</span><h3>Continue</h3><p>Move to the next step when you're ready.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="support" id="support">
+  <div class="container support-inner">
+    <div><label>NEED HELP?</label><h2>We're here when you need us.</h2><p>Questions about a service or your order? Contact us.</p></div>
+    <a class="light-btn" href="#">Contact admin →</a>
+  </div>
+</section>
+</main>
+
+<div class="cartbar" id="cartbar">
+  <div class="container cart-inner">
+    <div class="cart-info"><span>✓</span><div><b id="cartItems">0 services selected</b><small id="cartNames">Choose a service to begin</small></div></div>
+    <div class="cart-right"><div class="total"><small>Total</small><b id="total">K0</b></div><button id="continue" disabled>Continue →</button></div>
+  </div>
+</div>
+
+<footer><div class="container"><span>© 2026 Let's Trade ZM</span><span>Subscriptions made simple.</span></div></footer>
+<script src="./js/app.js?v=0.4.0"></script>
+</body>
+</html>
