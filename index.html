@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10142b">
+  <title>Let's Trade ZM — Subscription Services</title>
+  <style>
+    :root{
+      --navy:#10142b;
+      --purple:#17102d;
+      --green:#246b45;
+      --green-2:#2f8a5a;
+      --sky:#57b8e8;
+      --cream:#f7f0df;
+      --paper:#fffdf7;
+      --ink:#182033;
+      --muted:#6d7483;
+      --line:#e7e1d4;
+      --white:#fff;
+      --shadow:0 18px 50px rgba(16,20,43,.10);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--ink);
+      background:var(--cream);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      line-height:1.5;
+    }
+    a{text-decoration:none;color:inherit}
+    button{font:inherit}
+    .container{width:min(1160px,calc(100% - 36px));margin:auto}
+    .nav{
+      position:sticky;top:0;z-index:50;
+      background:rgba(16,20,43,.96);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .nav-inner{
+      min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:20px;
+    }
+    .brand{display:flex;align-items:center;gap:11px;color:#fff;font-weight:900;letter-spacing:.08em}
+    .brand-mark{
+      width:34px;height:34px;border-radius:11px;
+      display:grid;place-items:center;color:var(--navy);
+      background:linear-gradient(135deg,var(--sky),#9be1ff);
+      font-weight:1000;
+    }
+    .nav-links{display:flex;align-items:center;gap:8px;color:#dfe5ef;font-size:.93rem}
+    .nav-links a{padding:10px 13px;border-radius:12px}
+    .nav-links a:hover{background:rgba(255,255,255,.08)}
+    .nav-cta{background:var(--green);color:#fff!important;font-weight:800}
+
+    .hero{
+      position:relative;overflow:hidden;
+      color:#fff;background:
+      radial-gradient(circle at 82% 22%,rgba(87,184,232,.23),transparent 30%),
+      radial-gradient(circle at 8% 92%,rgba(47,138,90,.28),transparent 33%),
+      linear-gradient(135deg,var(--navy),var(--purple));
+    }
+    .hero:after{
+      content:"";position:absolute;inset:auto -10% -140px -10%;height:260px;
+      background:var(--cream);border-radius:50% 50% 0 0/45% 45% 0 0;
+    }
+    .hero-grid{position:relative;z-index:1;min-height:570px;padding:88px 0 130px;display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:7px 11px;border:1px solid rgba(255,255,255,.15);
+      border-radius:999px;background:rgba(255,255,255,.06);
+      color:#bcecff;font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+    }
+    .eyebrow span{width:7px;height:7px;background:#66d28e;border-radius:50%;box-shadow:0 0 0 5px rgba(102,210,142,.13)}
+    h1{font-size:clamp(2.7rem,6vw,5.5rem);line-height:.98;letter-spacing:-.055em;margin:22px 0}
+    .hero-copy{max-width:650px;color:#dce3ef;font-size:1.08rem}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+    .btn{
+      border:0;border-radius:14px;padding:14px 20px;font-weight:900;cursor:pointer;
+      transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .btn-primary{background:var(--sky);color:var(--navy);box-shadow:0 12px 28px rgba(87,184,232,.22)}
+    .btn-secondary{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.16)}
+    .hero-note{margin-top:18px;color:#9fa9bc;font-size:.85rem}
+    .hero-card{
+      padding:25px;border:1px solid rgba(255,255,255,.12);border-radius:28px;
+      background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.04));
+      box-shadow:0 30px 70px rgba(0,0,0,.2);backdrop-filter:blur(14px)
+    }
+    .hero-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    .hero-card-title{font-weight:900}
+    .status{font-size:.72rem;font-weight:900;padding:6px 9px;border-radius:999px;background:rgba(102,210,142,.12);color:#8be4aa}
+    .mini-service{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.09)}
+    .mini-service:last-child{border-bottom:0}
+    .mini-logo{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:#fff;color:var(--navy);font-weight:1000}
+    .mini-service strong{display:block}.mini-service small{color:#9fa9bc}
+    .mini-price{margin-left:auto;font-weight:900;color:#c9f0ff}
+
+    section{padding:82px 0}
+    .section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:30px}
+    .kicker{color:var(--green);font-weight:900;text-transform:uppercase;letter-spacing:.1em;font-size:.75rem}
+    h2{font-size:clamp(2rem,4vw,3.25rem);line-height:1.05;letter-spacing:-.04em;margin:8px 0 0}
+    .section-copy{max-width:540px;color:var(--muted);margin:0}
+
+    .store{background:var(--paper)}
+    .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:25px}
+    .filter{
+      border:1px solid var(--line);background:transparent;color:var(--muted);
+      border-radius:999px;padding:9px 15px;font-weight:800;cursor:pointer
+    }
+    .filter.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .products{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .product{
+      position:relative;padding:20px;border:1px solid var(--line);border-radius:var(--radius);
+      background:#fff;min-height:245px;display:flex;flex-direction:column;
+      transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+    }
+    .product:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+    .product.selected{border:2px solid var(--green);padding:19px;box-shadow:0 15px 35px rgba(36,107,69,.12)}
+    .select-check{
+      position:absolute;right:17px;top:17px;width:27px;height:27px;border-radius:50%;
+      border:1px solid var(--line);display:grid;place-items:center;font-size:.8rem;font-weight:1000;color:transparent;
+      background:#fff
+    }
+    .product.selected .select-check{background:var(--green);border-color:var(--green);color:#fff}
+    .service-logo{
+      width:58px;height:58px;border-radius:17px;display:grid;place-items:center;
+      color:#fff;font-size:1.15rem;font-weight:1000;margin-bottom:18px
+    }
+    .netflix{background:#161616}.prime{background:#2a8fd2}.spotify{background:#1e9f59}.showmax{background:#141414}
+    .product h3{margin:0 0 3px;font-size:1.12rem}.product small{color:var(--muted)}
+    .product-bottom{margin-top:auto;display:flex;align-items:end;justify-content:space-between;gap:10px;padding-top:18px}
+    .price{font-size:1.4rem;font-weight:1000;letter-spacing:-.04em}
+    .price small{font-size:.75rem;font-weight:700}
+    .choose{border:1px solid var(--line);background:var(--cream);padding:9px 11px;border-radius:11px;font-size:.78rem;font-weight:900}
+    .product.selected .choose{background:var(--green);border-color:var(--green);color:#fff}
+
+    .selection-bar{
+      position:fixed;z-index:60;left:50%;bottom:18px;transform:translate(-50%,120%);
+      width:min(900px,calc(100% - 24px));padding:13px 14px 13px 18px;border-radius:18px;
+      background:var(--navy);color:#fff;box-shadow:0 22px 55px rgba(16,20,43,.3);
+      display:flex;align-items:center;gap:18px;transition:transform .25s ease;
+    }
+    .selection-bar.show{transform:translate(-50%,0)}
+    .selection-info{min-width:0;flex:1}.selection-info strong{display:block}.selection-info span{color:#aeb8c9;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .selection-total{font-size:1.2rem;font-weight:1000;white-space:nowrap}
+    .selection-bar .btn{padding:11px 15px}
+
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .step{padding:25px;background:#fff;border:1px solid var(--line);border-radius:var(--radius)}
+    .step-number{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:var(--navy);color:#fff;font-weight:1000;margin-bottom:20px}
+    .step h3{margin:0 0 7px}.step p{margin:0;color:var(--muted)}
+
+    .support{
+      color:#fff;background:linear-gradient(135deg,var(--green),#173d2a);
+      border-radius:32px;padding:48px;display:flex;align-items:center;justify-content:space-between;gap:30px;
+      overflow:hidden;position:relative
+    }
+    .support:after{content:"";position:absolute;width:250px;height:250px;border-radius:50%;right:-90px;top:-100px;background:rgba(87,184,232,.2)}
+    .support h2{margin:0;position:relative;z-index:1}.support p{color:#d6eadf;max-width:580px;position:relative;z-index:1}
+    .support .btn{position:relative;z-index:1;background:var(--cream);color:var(--navy)}
+
+    footer{padding:35px 0 110px;background:var(--navy);color:#aeb8c9}
+    .footer-inner{display:flex;justify-content:space-between;gap:20px;align-items:center}
+    .footer-brand{color:#fff;font-weight:900}
+    .footer-small{font-size:.82rem}
+
+    @media(max-width:900px){
+      .hero-grid{grid-template-columns:1fr;gap:35px;padding-top:65px}
+      .hero-card{max-width:600px}
+      .products{grid-template-columns:repeat(2,1fr)}
+      .steps{grid-template-columns:1fr}
+      .support{flex-direction:column;align-items:flex-start}
+    }
+    @media(max-width:620px){
+      .container{width:min(100% - 24px,1160px)}
+      .nav-inner{min-height:66px}.nav-links a:not(.nav-cta){display:none}
+      .hero-grid{min-height:auto;padding:55px 0 105px}
+      h1{font-size:3.05rem}
+      .hero-copy{font-size:1rem}
+      section{padding:62px 0}
+      .section-head{display:block}.section-copy{margin-top:14px}
+      .products{grid-template-columns:1fr 1fr;gap:10px}
+      .product{padding:15px;min-height:220px;border-radius:17px}
+      .product.selected{padding:14px}
+      .service-logo{width:48px;height:48px;border-radius:14px;margin-bottom:14px}
+      .product h3{font-size:.98rem}.product small{font-size:.74rem}
+      .price{font-size:1.15rem}
+      .choose{padding:8px 9px}
+      .selection-bar{gap:9px;padding:10px}
+      .selection-total{font-size:1rem}
+      .selection-bar .btn{padding:10px 12px}
+      .support{padding:32px 25px;border-radius:24px}
+      .footer-inner{align-items:flex-start;flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#"><span class="brand-mark">LT</span><span>LET'S TRADE ZM</span></a>
+      <nav class="nav-links">
+        <a href="#services">Services</a>
+        <a href="#how">How it works</a>
+        <a class="nav-cta" href="#services">Get started</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow"><span></span> Digital subscriptions made simple</div>
+          <h1>Your entertainment.<br>One simple place.</h1>
+          <p class="hero-copy">Choose the services you want, review your selection and continue. Fast, simple and built for customers in Zambia.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#services">Explore services</a>
+            <a class="btn btn-secondary" href="#how">See how it works</a>
+          </div>
+          <div class="hero-note">Design prototype • Prices shown are temporary for this stage.</div>
+        </div>
+
+        <div class="hero-card">
+          <div class="hero-card-top">
+            <div class="hero-card-title">Popular services</div>
+            <div class="status">AVAILABLE</div>
+          </div>
+          <div class="mini-service">
+            <div class="mini-logo">N</div>
+            <div><strong>Netflix</strong><small>Streaming</small></div>
+            <div class="mini-price">K65</div>
+          </div>
+          <div class="mini-service">
+            <div class="mini-logo">P</div>
+            <div><strong>Prime Video</strong><small>Streaming</small></div>
+            <div class="mini-price">K80</div>
+          </div>
+          <div class="mini-service">
+            <div class="mini-logo">S</div>
+            <div><strong>Spotify</strong><small>Music</small></div>
+            <div class="mini-price">K65</div>
+          </div>
+          <div class="mini-service">
+            <div class="mini-logo">S</div>
+            <div><strong>Showmax</strong><small>Streaming</small></div>
+            <div class="mini-price">K75</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="store">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="kicker">Choose your services</div>
+            <h2>Build your selection.</h2>
+          </div>
+          <p class="section-copy">Select one or several services. Your total updates instantly and your choices stay visible while you browse.</p>
+        </div>
+
+        <div class="filters" role="tablist" aria-label="Service categories">
+          <button class="filter active" data-filter="all">All</button>
+          <button class="filter" data-filter="streaming">Streaming</button>
+          <button class="filter" data-filter="music">Music</button>
+        </div>
+
+        <div class="products">
+          <article class="product" data-id="netflix" data-category="streaming" data-price="65" data-name="Netflix">
+            <div class="select-check">✓</div>
+            <div class="service-logo netflix">N</div>
+            <h3>Netflix</h3><small>Streaming</small>
+            <div class="product-bottom"><div class="price">K65 <small>/ month</small></div><div class="choose">Select</div></div>
+          </article>
+
+          <article class="product" data-id="prime" data-category="streaming" data-price="80" data-name="Prime Video">
+            <div class="select-check">✓</div>
+            <div class="service-logo prime">P</div>
+            <h3>Prime Video</h3><small>Streaming</small>
+            <div class="product-bottom"><div class="price">K80 <small>/ month</small></div><div class="choose">Select</div></div>
+          </article>
+
+          <article class="product" data-id="spotify" data-category="music" data-price="65" data-name="Spotify">
+            <div class="select-check">✓</div>
+            <div class="service-logo spotify">S</div>
+            <h3>Spotify</h3><small>Music</small>
+            <div class="product-bottom"><div class="price">K65 <small>/ month</small></div><div class="choose">Select</div></div>
+          </article>
+
+          <article class="product" data-id="showmax" data-category="streaming" data-price="75" data-name="Showmax">
+            <div class="select-check">✓</div>
+            <div class="service-logo showmax">S</div>
+            <h3>Showmax</h3><small>Streaming</small>
+            <div class="product-bottom"><div class="price">K75 <small>/ month</small></div><div class="choose">Select</div></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="kicker">Simple by design</div>
+            <h2>Three steps. That's it.</h2>
+          </div>
+          <p class="section-copy">The final system will connect these steps to signup, payment verification and activation.</p>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-number">01</div><h3>Choose</h3><p>Select the subscription services you want. You can select more than one.</p></div>
+          <div class="step"><div class="step-number">02</div><h3>Sign up & pay</h3><p>Enter your details and choose an available payment method.</p></div>
+          <div class="step"><div class="step-number">03</div><h3>Get activated</h3><p>Once payment is verified, your subscription is activated and your dashboard becomes available.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="support">
+          <div>
+            <div class="kicker" style="color:#a8e4c1">Need help?</div>
+            <h2>We keep the process human.</h2>
+            <p>Have a question before subscribing? The production version will connect this button to your support channel.</p>
+          </div>
+          <button class="btn" id="supportBtn">Contact support</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="selection-bar" id="selectionBar" aria-live="polite">
+    <div class="selection-info">
+      <strong id="selectionCount">0 services selected</strong>
+      <span id="selectionNames">Select a service to begin</span>
+    </div>
+    <div class="selection-total" id="selectionTotal">K0</div>
+    <button class="btn btn-primary" id="continueBtn">Continue</button>
+  </div>
+
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-brand">LET'S TRADE ZM</div>
+      <div class="footer-small">© 2026 Let's Trade ZM • Design prototype v0.4.0</div>
+    </div>
+  </footer>
+
+  <script>
+    const selected = new Map();
+
+    document.querySelectorAll('.product').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.dataset.id;
+        if (selected.has(id)) {
+          selected.delete(id);
+          card.classList.remove('selected');
+          card.querySelector('.choose').textContent = 'Select';
+        } else {
+          selected.set(id, {
+            name: card.dataset.name,
+            price: Number(card.dataset.price)
+          });
+          card.classList.add('selected');
+          card.querySelector('.choose').textContent = 'Selected';
+        }
+        updateSelection();
+      });
+    });
+
+    function updateSelection(){
+      const count = selected.size;
+      const total = [...selected.values()].reduce((sum, item) => sum + item.price, 0);
+      const names = [...selected.values()].map(item => item.name).join(' • ');
+
+      document.getElementById('selectionCount').textContent =
+        `${count} service${count === 1 ? '' : 's'} selected`;
+      document.getElementById('selectionNames').textContent =
+        count ? names : 'Select a service to begin';
+      document.getElementById('selectionTotal').textContent = `K${total}`;
+
+      document.getElementById('selectionBar').classList.toggle('show', count > 0);
+    }
+
+    document.querySelectorAll('.filter').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
+        button.classList.add('active');
+        const filter = button.dataset.filter;
+
+        document.querySelectorAll('.product').forEach(card => {
+          card.style.display = filter === 'all' || card.dataset.category === filter ? '' : 'none';
+        });
+      });
+    });
+
+    document.getElementById('continueBtn').addEventListener('click', () => {
+      if (!selected.size) return;
+      alert('Prototype only: the next release will connect this selection to the signup and payment flow.');
+    });
+
+    document.getElementById('supportBtn').addEventListener('click', () => {
+      alert('Prototype only: support contact will be connected in a later release.');
+    });
+  </script>
+</body>
+</html>
