@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subscription Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <header class="bg-white border-b px-6 py-4 flex justify-between items-center">
+    <span class="font-bold text-xl text-indigo-600">SubManager</span>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-6 space-y-8">
+    <h1 class="text-2xl font-bold text-gray-900">Subscription Checkout</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Left Column: Step 1 & Step 2 -->
+      <div class="md:col-span-2 space-y-8">
+        <!-- Services Section -->
+        <div class="space-y-3">
+          <h3 class="text-lg font-semibold">1. Select Services</h3>
+          <div id="services-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <p class="text-sm text-gray-500">Loading services...</p>
+          </div>
+        </div>
+
+        <!-- Intake Form -->
+        <div class="space-y-3">
+          <h3 class="text-lg font-semibold">2. Customer Details</h3>
+          <form id="intake-form" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input type="text" id="cust-name" placeholder="Full Name" required class="p-2 border rounded-md">
+            <input type="email" id="cust-email" placeholder="Email Address" required class="p-2 border rounded-md">
+            <input type="tel" id="cust-phone" placeholder="Phone Number" required class="p-2 border rounded-md">
+          </form>
+        </div>
+      </div>
+
+      <!-- Right Column: Cart Summary -->
+      <div class="md:col-span-1">
+        <div class="p-4 border rounded-lg bg-white space-y-4 shadow-sm">
+          <h3 class="text-lg font-semibold">Summary</h3>
+          <ul id="cart-items" class="divide-y divide-gray-200 text-sm">
+            <li class="py-2 text-gray-400">No services selected.</li>
+          </ul>
+          <div class="pt-2 border-t flex justify-between font-bold text-gray-900">
+            <span>Total:</span>
+            <span id="total-amount">$0.00</span>
+          </div>
+          <button id="proceed-btn" disabled class="w-full py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 disabled:bg-gray-300">
+            Proceed to Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Checkout Modal -->
+  <div id="checkout-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-lg max-w-md w-full p-6 space-y-4">
+      <h3 class="text-xl font-bold">Select Payment Method</h3>
+      <select id="payment-select" class="w-full p-2 border rounded-md">
+        <option value="">-- Choose Option --</option>
+      </select>
+      <div class="flex gap-2 justify-end pt-4">
+        <button id="close-modal" class="px-4 py-2 border rounded-md hover:bg-gray-50">Cancel</button>
+        <button id="submit-order" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Submit Order</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
