@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Portal - Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <div class="card">
+      <header class="dashboard-header">
+        <div>
+          <h1 class="dashboard-title">Client Dashboard</h1>
+          <p style="color: var(--text-muted); font-size: 14px;">Welcome to your personal account overview</p>
+        </div>
+        <button id="signout-btn" class="btn btn-outline" style="width: auto;">Sign Out</button>
+      </header>
+
+      <!-- Feedback / Error Banner -->
+      <div id="dashboard-banner" class="banner" role="alert">
+        <span id="banner-message"></span>
+      </div>
+
+      <!-- Loading Indicator -->
+      <div id="loading-state" style="text-align: center; padding: 40px 0;">
+        <span class="spinner" style="width: 24px; height: 24px; border-width: 3px;"></span>
+        <p style="color: var(--text-muted); margin-top: 12px; font-size: 14px;">Loading user profile...</p>
+      </div>
+
+      <!-- User Profile Content -->
+      <main id="dashboard-content" class="hidden">
+        <div class="profile-card">
+          <div class="info-box">
+            <div class="info-label">Full Name</div>
+            <div id="user-fullname" class="info-value">-</div>
+          </div>
+
+          <div class="info-box">
+            <div class="info-label">Email Address</div>
+            <div id="user-email" class="info-value">-</div>
+          </div>
+
+          <div class="info-box">
+            <div class="info-label">Account Role</div>
+            <div class="info-value">
+              <span id="user-role" class="badge">client</span>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <div class="info-label">User ID (UID)</div>
+            <div id="user-uid" class="info-value" style="font-size: 13px; font-family: monospace;">-</div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>
