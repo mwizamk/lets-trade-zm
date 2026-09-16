@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Let's Trade ZM | Zambian Subscription Services</title>
+<meta name="description" content="Let's Trade ZM is a Zambian online subscription service provider helping customers access and manage digital subscriptions.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#10152b">
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,-apple-system,sans-serif;background:#f7f3e8;color:#15162a;line-height:1.5}
+header{background:#10152b;color:white;position:sticky;top:0;z-index:10}.nav{max-width:1050px;margin:auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:800;font-size:1.1rem}.nav a{color:white;text-decoration:none;margin-left:14px;font-size:.9rem}
+main{max-width:1050px;margin:auto}.hero{padding:58px 18px 42px;background:linear-gradient(135deg,#10152b,#193b35);color:white;border-radius:0 0 28px 28px}.hero h1{font-size:clamp(2.1rem,8vw,4rem);line-height:1;margin:0 0 14px}.hero p{max-width:650px;color:#e6e8ef}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.btn{border:0;border-radius:12px;padding:13px 18px;font-weight:700;text-decoration:none;display:inline-block;cursor:pointer}.primary{background:#b9d889;color:#10152b}.secondary{background:#fff;color:#10152b}
+section{padding:42px 18px}.section-title{margin:0 0 18px;font-size:1.6rem}.offer{background:#fff;border:1px solid #ddd6c6;border-radius:18px;padding:20px}.offer strong{font-size:1.15rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.card{background:#fff;border:1px solid #ddd6c6;border-radius:16px;padding:17px}.price{font-size:1.25rem;font-weight:800;margin-top:8px}.muted{color:#666}.steps{counter-reset:step}.step{padding:14px 0;border-bottom:1px solid #ddd6c6}.step b:before{counter-increment:step;content:counter(step) ". ";color:#315f50}
+details{background:#fff;border:1px solid #ddd6c6;border-radius:12px;padding:14px;margin:9px 0}summary{font-weight:700;cursor:pointer}
+footer{background:#10152b;color:#dce0e8;text-align:center;padding:28px 18px;font-size:.9rem}
+@media(max-width:650px){.nav a{margin-left:8px}.nav a.hide-mobile{display:none}}
+</style>
+</head>
+<body>
+<header><nav class="nav"><div class="brand">Let's Trade ZM</div><div><a href="#prices">Prices</a><a href="#faq">FAQ</a><a class="hide-mobile" href="login.html">Sign in</a></div></nav></header>
+<main>
+<section class="hero">
+<p>🇿🇲 Zambian Subscription Service Provider</p>
+<h1>Manage your digital subscriptions simply.</h1>
+<p>Let's Trade ZM helps you access and manage selected premium digital subscription services through one simple online manager.</p>
+<div class="actions"><a class="btn primary" href="login.html">Get Started</a><a class="btn secondary" href="#prices">View Price List</a></div>
+</section>
+<section><div class="offer"><strong>Special Offer</strong><p id="offerText" style="margin-bottom:0">Selected subscription offers and prices are updated regularly. Check the price list before placing an order.</p></div></section>
+<section id="prices"><h2 class="section-title">Price List</h2><div id="priceGrid" class="grid"></div><p class="muted">Prices may change depending on exchange rate and service availability.</p></section>
+<section><h2 class="section-title">How to Sign In</h2><div class="steps">
+<div class="step"><b>Open Get Started</b><br>Use the sign-in page to access your customer account.</div>
+<div class="step"><b>Enter your number</b><br>Use the customer number registered with Let's Trade ZM.</div>
+<div class="step"><b>Open your dashboard</b><br>If your account has an active assigned subscription, your services appear there.</div>
+</div></section>
+<section id="faq"><h2 class="section-title">FAQs</h2>
+<details><summary>How do I order a subscription?</summary><p>Select the service from the price list, continue to signup/order, and submit your customer details.</p></details>
+<details><summary>When do I receive account details?</summary><p>Account access is provided after the order and payment have been verified by the administrator.</p></details>
+<details><summary>Can I have more than one service?</summary><p>Yes. The signup page is designed to allow multiple services in one order.</p></details>
+<details><summary>What if my subscription expires?</summary><p>Your dashboard should show the service as expired and active access should no longer be displayed.</p></details>
+</section>
+</main>
+<footer>© <span id="year"></span> Let's Trade ZM · Zambian Subscription Service Provider</footer>
+<script>
+const prices=[
+["Netflix Premium","Shared / Profile","K65 / month"],["Netflix Premium","Private Profile","K100 / month"],
+["Prime Video","All Devices","K80 / month"],["Spotify","Shared / Slot","K60 / month"],
+["Apple Music","Shared / Slot","K80 / month"],["iCloud 50GB","Shared / Storage","K50 / month"],
+["iCloud 200GB","Shared / Storage","K80 / month"],["Gemini AI Plus","AI subscription","K50 / month"],
+["Music Distribution","Spotify, Apple Music, Amazon etc.","K100"],["Cover Art / Logo Design","Design service","K50"]
+];
+document.getElementById("priceGrid").innerHTML=prices.map(p=>`<article class="card"><b>${p[0]}</b><div class="muted">${p[1]}</div><div class="price">${p[2]}</div></article>`).join("");
+document.getElementById("year").textContent=new Date().getFullYear();
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Portal | Let's Trade ZM</title><meta name="robots" content="noindex,nofollow">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#f2efe6;color:#15162a}.top{background:#10152b;color:white;padding:16px}.topin{max-width:1100px;margin:auto;display:flex;justify-content:space-between;align-items:center}.top button{padding:8px 12px;background:transparent;border:1px solid #ffffff66;color:white;border-radius:8px}.wrap{max-width:1100px;margin:auto;padding:18px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat,.panel{background:#fff;border:1px solid #ddd6c6;border-radius:14px;padding:15px}.stat b{font-size:1.7rem}.panel{margin-top:14px;overflow:auto}table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:left;padding:10px;border-bottom:1px solid #ddd6c6}button.action{border:0;border-radius:7px;padding:7px 10px;cursor:pointer;background:#193b35;color:white;margin:2px}.deny{background:#7b2732!important}.formgrid{display:grid;grid-template-columns:1fr 1fr 100px;gap:10px}.formgrid input{padding:10px;border:1px solid #ccc;border-radius:8px}@media(max-width:650px){.stats,.formgrid{grid-template-columns:1fr}}
+</style></head>
+<body><header class="top"><div class="topin"><strong>Let's Trade ZM · Admin</strong><button onclick="logout()">Sign out</button></div></header>
+<main class="wrap"><h1>Admin Portal</h1>
+<div class="stats"><div class="stat">Customers<br><b id="customers">0</b></div><div class="stat">Orders<br><b id="orders">0</b></div><div class="stat">Active<br><b id="active">0</b></div></div>
+<section class="panel"><h2>Add Price List Item</h2><div class="formgrid"><input id="pname" placeholder="Service name"><input id="pprice" type="number" placeholder="Price (K)"><button class="action" onclick="addPrice()">Add</button></div></section>
+<section class="panel"><h2>Orders / Customer Access</h2><table><thead><tr><th>Order</th><th>Customer</th><th>Services</th><th>Total</th><th>Status</th><th>Access</th></tr></thead><tbody id="ordersTable"></tbody></table></section>
+<section class="panel"><h2>Price List Records</h2><table><thead><tr><th>Service</th><th>Price</th><th>Action</th></tr></thead><tbody id="priceTable"></tbody></table></section>
+</main>
+<script>
+if(localStorage.getItem("ltzm_admin")!=="true")location.href="admin-login.html";
+let prices=JSON.parse(localStorage.getItem("ltzm_prices")||"null")||[
+{name:"Netflix Premium",price:65},{name:"Spotify",price:60},{name:"Prime Video",price:80},{name:"Apple Music",price:80}
+];
+function save(){localStorage.setItem("ltzm_prices",JSON.stringify(prices))}
+function addPrice(){const n=document.getElementById("pname").value.trim(),p=Number(document.getElementById("pprice").value);if(!n||!p)return;prices.push({name:n,price:p});save();document.getElementById("pname").value="";document.getElementById("pprice").value="";render();}
+function removePrice(i){prices.splice(i,1);save();render();}
+function render(){
+document.getElementById("priceTable").innerHTML=prices.map((p,i)=>`<tr><td>${p.name}</td><td>K${p.price}</td><td><button class="action deny" onclick="removePrice(${i})">Delete</button></td></tr>`).join("");
+const order=JSON.parse(localStorage.getItem("ltzm_last_order")||"null"),orders=order?[order]:[];
+document.getElementById("customers").textContent=order?1:0;document.getElementById("orders").textContent=orders.length;
+document.getElementById("active").textContent=order&&order.status==="Approved"?1:0;
+document.getElementById("ordersTable").innerHTML=orders.length?orders.map(o=>`<tr><td>${o.id}</td><td>${o.name}<br>${o.number}</td><td>${o.services.map(s=>s.name).join("<br>")}</td><td>K${o.total}</td><td>${o.status}</td><td><button class="action" onclick="approve()">Approve</button><button class="action deny" onclick="deny()">Deny</button></td></tr>`).join(""):"<tr><td colspan='6'>No orders yet.</td></tr>";
+}
+function approve(){const o=JSON.parse(localStorage.getItem("ltzm_last_order")||"null");if(o){o.status="Approved";localStorage.setItem("ltzm_last_order",JSON.stringify(o));render();}}
+function deny(){const o=JSON.parse(localStorage.getItem("ltzm_last_order")||"null");if(o){o.status="Denied";localStorage.setItem("ltzm_last_order",JSON.stringify(o));render();}}
+function logout(){localStorage.removeItem("ltzm_admin");location.href="admin-login.html"}
+render();
+</script></body></html>

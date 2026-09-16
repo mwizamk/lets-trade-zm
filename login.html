@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign In | Let's Trade ZM</title>
+<meta name="description" content="Sign in to your Let's Trade ZM customer account.">
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:system-ui,sans-serif;background:#f7f3e8;color:#15162a;display:grid;place-items:center;padding:18px}
+.box{width:min(440px,100%);background:white;border:1px solid #ddd6c6;border-radius:22px;padding:26px;box-shadow:0 12px 35px #10152b12}.brand{font-size:1.5rem;font-weight:800;color:#193b35}.sub{color:#666;margin-top:3px}label{display:block;font-weight:700;margin:18px 0 7px}input{width:100%;padding:14px;border:1px solid #cfc9bb;border-radius:11px;font-size:1rem}button{width:100%;margin-top:20px;padding:14px;border:0;border-radius:11px;background:#193b35;color:white;font-weight:800;font-size:1rem;cursor:pointer}.msg{margin-top:14px;padding:11px;border-radius:10px;display:none}.back{display:block;text-align:center;margin-top:18px;color:#193b35;text-decoration:none}.note{font-size:.86rem;color:#666;margin-top:18px}
+</style>
+</head>
+<body><main class="box"><div class="brand">Let's Trade ZM</div><div class="sub">Customer sign in</div>
+<form id="loginForm"><label for="number">Customer number</label><input id="number" name="number" inputmode="tel" autocomplete="tel" placeholder="Enter your number" required><button type="submit">Sign In</button></form>
+<div id="msg" class="msg"></div><p class="note">Frontend prototype: real authentication will be connected when the backend is added.</p><a class="back" href="index.html">← Back to Let's Trade ZM</a>
+</main>
+<script>
+const form=document.getElementById("loginForm"),msg=document.getElementById("msg");
+form.addEventListener("submit",e=>{e.preventDefault();const number=document.getElementById("number").value.trim();if(!number)return;localStorage.setItem("ltzm_current_number",number);msg.style.display="block";msg.textContent="Signing in…";setTimeout(()=>location.href="dashboard.html",300);});
+</script>
+</body>
+</html>
