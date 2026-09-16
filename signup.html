@@ -23,7 +23,7 @@ label{font-weight:700;font-size:.9rem}
 input,select{width:100%;padding:12px;border:1px solid #cfc9bb;border-radius:10px;margin-top:6px;font:inherit}
 button{width:100%;padding:14px;border:0;border-radius:11px;background:#193b35;color:#fff;font-weight:800;font-size:1rem;cursor:pointer}
 .total{font-size:1.4rem;font-weight:900;margin:15px 0}
-.msg{padding:12px;margin-top:12px;border-radius:10px;display:none}
+.msg{padding:12px;margin-top:12px;border-radius:10px;display:none;background:#e2f0d9;color:#1e4620}
 </style>
 </head>
 <body>
@@ -55,22 +55,22 @@ Total: <span id="total">K0</span>
 
 <label>
 Name
-<input id="name" required>
+<input id="name" name="name" type="text" required>
 </label>
 
 <label>
 Phone / Number
-<input id="number" inputmode="tel" required>
+<input id="number" name="number" type="tel" inputmode="tel" required>
 </label>
 
 <label>
 Email (optional)
-<input id="email" type="email">
+<input id="email" name="email" type="email">
 </label>
 
 <label>
 Payment Method
-<select id="payment">
+<select id="payment" name="payment">
 <option>Mobile Money</option>
 <option>Bank</option>
 <option>Cash</option>
