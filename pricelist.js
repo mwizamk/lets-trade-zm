@@ -62,12 +62,12 @@ function renderPriceList() {
       </label>
     `;
   }).join("");
+
+  if (typeof calc === "function") {
+    calc();
+  }
 }
 
-/*
-Run correctly whether this script loads before or after
-DOMContentLoaded.
-*/
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", renderPriceList);
 } else {
