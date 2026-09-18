@@ -15,14 +15,25 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // Replace with your actual Firebase project credentials from the Firebase Console
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCfTSZI9HNxiveExkl8y5ZujU3RhoGupds",
+    authDomain: "lets-trade-zm-6849d.firebaseapp.com",
+    projectId: "lets-trade-zm-6849d",
+    storageBucket: "lets-trade-zm-6849d.firebasestorage.app",
+    messagingSenderId: "1052285066127",
+    appId: "1:1052285066127:web:6884f38b2642613959c9fa"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+</script>
 
 // Initialize Firebase App
 const app = initializeApp(firebaseConfig);
