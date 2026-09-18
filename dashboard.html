@@ -14,9 +14,28 @@
 <div class="card"><h2>Need Help?</h2><p>Contact the Let's Trade ZM administrator for payment verification, subscription renewal or account access.</p><a class="contact" href="https://wa.me/">Contact Admin</a></div>
 </main>
 <script>
+  import { db, auth } from "./firebase-config.js";
+import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+// Example: Save a trade/transaction order
+async function createOrder(tradeData) {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  await addDoc(collection(db, "orders"), {
+    userId: user.uid,
+    userEmail: user.email,
+    details: tradeData,
+    createdAt: new Date()
+  });
+}
+
+  
 const current=localStorage.getItem("ltzm_current_number")||"Customer",order=JSON.parse(localStorage.getItem("ltzm_last_order")||"null");
 document.getElementById("welcome").textContent="Welcome, "+(order?.name||"Customer")+".";document.getElementById("number").textContent="Number: "+current;
 const box=document.getElementById("services");
 if(order?.services?.length){box.innerHTML=order.services.map(s=>`<div class="service"><strong>${s.name}</strong><br>K${s.price}<br><span class="badge pending">Pending admin assignment</span></div>`).join("")}else box.innerHTML="<p>No assigned active subscriptions yet.</p>";
 function logout(){localStorage.removeItem("ltzm_current_number");location.href="login.html"}
-</script></body></html>
+</script>
+</body>
+</html>
