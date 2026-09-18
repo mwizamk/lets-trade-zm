@@ -14,6 +14,29 @@
 <div id="msg" class="msg"></div><p class="note">Frontend prototype: real authentication will be connected when the backend is added.</p><a class="back" href="index.html">← Back to Let's Trade ZM</a>
 </main>
 <script>
+  import { auth } from "./firebase-config.js";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+// Register user
+export async function registerUser(email, password) {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    window.location.href = "dashboard.html";
+  } catch (error) {
+    console.error("Auth error:", error.message);
+  }
+}
+
+// Login user
+export async function loginUser(email, password) {
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    window.location.href = "dashboard.html";
+  } catch (error) {
+    console.error("Login error:", error.message);
+  }
+}
+
 const form=document.getElementById("loginForm"),msg=document.getElementById("msg");
 form.addEventListener("submit",e=>{e.preventDefault();const number=document.getElementById("number").value.trim();if(!number)return;localStorage.setItem("ltzm_current_number",number);msg.style.display="block";msg.textContent="Signing in…";setTimeout(()=>location.href="dashboard.html",300);});
 </script>
