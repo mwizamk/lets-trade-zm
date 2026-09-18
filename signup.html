@@ -157,6 +157,31 @@ document.getElementById("signup").addEventListener("submit",function(e){
   msg.textContent=
     "Order submitted. Payment verification and account assignment will be handled by the administrator.";
 });
+
+  import { auth } from "./firebase-config.js";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+// Register user
+export async function registerUser(email, password) {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    window.location.href = "dashboard.html";
+  } catch (error) {
+    console.error("Auth error:", error.message);
+  }
+}
+
+// Login user
+export async function loginUser(email, password) {
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    window.location.href = "dashboard.html";
+  } catch (error) {
+    console.error("Login error:", error.message);
+  }
+}
+
+  
 </script>
 
 </body>
