@@ -1,75 +1,69 @@
-import { 
-  auth, 
-  db, 
-  onAuthStateChanged, 
-  signOut,
-  doc,
-  setDoc,
-  getDoc 
-} from "./firebase.js";
+// app.js
+import { auth, db, collection, onSnapshot, addDoc } from "./firebase.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// DOM Elements
-const authSection = document.getElementById("auth-section");
-const dashboardSection = document.getElementById("dashboard-section");
-const userEmailSpan = document.getElementById("user-email");
-const userUidSpan = document.getElementById("user-uid");
-const displayNameInput = document.getElementById("user-display-name");
+// Global Store for Services
+let activeServices = [];
 
-const logoutBtn = document.getElementById("logout-btn");
-const saveProfileBtn = document.getElementById("save-profile-btn");
+/**
+ * Listens to Firestore 'services' collection and updates local state + UI
+ * @param {Function} callback Optional render callback receiving (services)
+ */
+export function subscribeToServices(callback) {
+  return onSnapshot(collection(db, "services"), (snapshot) => {
+    activeServices = [];
+    snapshot.forEach((doc) => {
+      activeServices.push({ id: doc.id, ...doc.data() });
+    });
+    if (callback) callback(activeServices);
+  });
+}
 
-let currentUser = null;
+/**
+ * Filter services by ownership type
+ * @param {Array} services List of services
+ * @param {string} ownership 'All' | 'Shared' | 'Private'
+ */
+export function filterServicesByOwnership(services, ownership = "All") {
+  if (ownership === "All") return services;
+  return services.filter(
+    (s) => (s.ownership || "").toLowerCase() === ownership.toLowerCase()
+  );
+}
 
-// Auth State Listener
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    currentUser = user;
-    if (userEmailSpan) userEmailSpan.textContent = user.email;
-    if (userUidSpan) userUidSpan.textContent = user.uid;
+/**
+ * Calculate total price of selected elements
+ * @param {string} selector CSS selector for checked checkboxes
+ * @returns {number} Summed total
+ */
+export function calculateSelectedTotal(selector = "#services input:checked") {
+  const selected = [...document.querySelectorAll(selector)];
+  return selected.reduce((sum, item) => sum + Number(item.value || 0), 0);
+}
 
-    if (authSection) authSection.style.display = "none";
-    if (dashboardSection) dashboardSection.style.display = "block";
-
-    // Fetch user details from Firestore
-    try {
-      const userDocRef = doc(db, "users", user.uid);
-      const userDocSnap = await getDoc(userDocRef);
-
-      if (userDocSnap.exists() && userDocSnap.data().displayName && displayNameInput) {
-        displayNameInput.value = userDocSnap.data().displayName;
-      }
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    }
-  } else {
-    currentUser = null;
-    if (authSection) authSection.style.display = "block";
-    if (dashboardSection) dashboardSection.style.display = "none";
-  }
-});
-
-// Update User Profile
-if (saveProfileBtn) {
-  saveProfileBtn.addEventListener("click", async () => {
-    if (!currentUser) return;
-
-    try {
-      await setDoc(doc(db, "users", currentUser.uid), {
-        displayName: displayNameInput.value,
-        updatedAt: new Date().toISOString()
-      }, { merge: true });
-
-      alert("Profile updated successfully!");
-    } catch (error) {
-      alert("Error updating profile: " + error.message);
+/**
+ * Listens for auth state changes across pages
+ * @param {Function} onUserSignedIn Callback for signed-in user
+ * @param {Function} onUserSignedOut Callback for signed-out user
+ */
+export function monitorAuthState(onUserSignedIn, onUserSignedOut) {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      if (onUserSignedIn) onUserSignedIn(user);
+    } else {
+      if (onUserSignedOut) onUserSignedOut();
     }
   });
 }
 
-// Logout Action
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", async () => {
+/**
+ * Sign out current user session
+ */
+export async function logoutUser() {
+  try {
     await signOut(auth);
     window.location.href = "login.html";
-  });
+  } catch (err) {
+    console.error("Logout failed:", err);
+  }
 }
