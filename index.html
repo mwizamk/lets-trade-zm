@@ -1,87 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Let's Trade ZM | Subscriptions & Digital Services</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Let's Trade ZM | Digital Subscriptions & Services</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,sans-serif;background:#f7f3e8;color:#15162a}
-.wrap{max-width:900px;margin:auto;padding:20px}
-.head{background:#10152b;color:white;padding:28px;border-radius:18px;margin-bottom:20px;text-align:center}
-.head h1{margin:0 0 6px 0;color:#b9d889}
-.filter-btn{background:#e8e2d2;border:1px solid #cfc9bb;padding:8px 16px;border-radius:20px;font-weight:700;cursor:pointer;color:#10152b}
-.filter-btn.active{background:#193b35;color:white;border-color:#193b35}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.card{background:white;border:1px solid #ddd6c6;padding:18px;border-radius:16px;position:relative;display:flex;flex-direction:column;justify-content:space-between}
-.badge{font-size:.75rem;padding:4px 8px;background:#10152b;color:#b9d889;border-radius:6px;font-weight:700;position:absolute;top:16px;right:16px}
-.btn{display:block;text-align:center;background:#193b35;color:white;padding:10px;border-radius:10px;text-decoration:none;font-weight:700;margin-top:12px}
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: #f7f3e8; color: #15162a; line-height: 1.5; }
+  .wrap { max-width: 950px; margin: 0 auto; padding: 20px; }
+  .head { background: #10152b; color: white; padding: 32px 24px; border-radius: 20px; margin-bottom: 24px; text-align: center; }
+  .head h1 { margin: 0 0 8px 0; color: #b9d889; font-size: 2rem; }
+  .head p { margin: 0; color: #cbd5e1; font-size: 1rem; }
+  .controls { display: flex; gap: 10px; margin-bottom: 24px; justify-content: center; flex-wrap: wrap; }
+  .filter-btn { background: #e8e2d2; border: 1px solid #cfc9bb; padding: 10px 20px; border-radius: 24px; font-weight: 700; cursor: pointer; color: #10152b; transition: all 0.2s ease; }
+  .filter-btn.active, .filter-btn:hover { background: #193b35; color: white; border-color: #193b35; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .card { background: white; border: 1px solid #ddd6c6; padding: 20px; border-radius: 16px; display: flex; flex-direction: column; justify-content: space-between; min-height: 180px; }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .card-title { margin: 0; font-size: 1.15rem; color: #10152b; font-weight: 800; }
+  .badge { font-size: 0.75rem; padding: 4px 10px; background: #10152b; color: #b9d889; border-radius: 6px; font-weight: 700; text-transform: uppercase; }
+  .price { font-size: 1.5rem; font-weight: 900; color: #193b35; margin: 0 0 8px 0; }
+  .desc { font-size: 0.88rem; color: #555; margin: 0; }
+  .btn { display: block; text-align: center; background: #193b35; color: white; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: 700; margin-top: 16px; transition: background 0.2s; }
+  .btn:hover { background: #10152b; }
+  .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .nav-link { color: #193b35; font-weight: 700; text-decoration: none; font-size: 0.95rem; }
 </style>
 </head>
 <body>
+
 <div class="wrap">
+  <div class="nav-bar">
+    <span style="font-weight: 900; color: #10152b;">LET'S TRADE ZM</span>
+    <div>
+      <a href="login.html" class="nav-link" style="margin-right: 15px;">Login</a>
+      <a href="signup.html" class="nav-link">Order Services</a>
+    </div>
+  </div>
+
   <header class="head">
     <h1>Let's Trade ZM</h1>
-    <p>Premium Digital Subscriptions & Services at Affordable Rates</p>
+    <p>Premium Digital Subscriptions & Accounts at Affordable Rates</p>
   </header>
 
   <section>
-    <h2>Services & Catalog</h2>
-    
-    <!-- Ownership Filter Tabs -->
-    <div style="display:flex;gap:10px;margin-bottom:20px">
-      <button class="filter-btn active" id="btn-All" onclick="filterCatalog('All')">All</button>
-      <button class="filter-btn" id="btn-Shared" onclick="filterCatalog('Shared')">Shared</button>
-      <button class="filter-btn" id="btn-Private" onclick="filterCatalog('Private')">Private</button>
+    <div class="controls">
+      <button class="filter-btn active" id="btn-All" onclick="applyFilter('All')">All Services</button>
+      <button class="filter-btn" id="btn-Shared" onclick="applyFilter('Shared')">Shared Accounts</button>
+      <button class="filter-btn" id="btn-Private" onclick="applyFilter('Private')">Private Accounts</button>
     </div>
 
     <div id="catalogContainer" class="grid">
-      <p>Loading active price list...</p>
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 16px;">Loading catalog services...</div>
     </div>
   </section>
 </div>
 
 <script type="module">
-  import { db, collection, onSnapshot } from "./firebase.js";
+  import { subscribeToServices, filterServicesByOwnership } from "./app.js";
 
   let allServices = [];
   let currentFilter = "All";
 
-  onSnapshot(collection(db, "services"), (snapshot) => {
-    allServices = [];
-    snapshot.forEach(docSnap => {
-      allServices.push({ id: docSnap.id, ...docSnap.data() });
-    });
-    renderCatalog(currentFilter);
+  subscribeToServices((services) => {
+    allServices = services;
+    renderCatalog();
   });
 
-  window.filterCatalog = (ownership) => {
+  window.applyFilter = (ownership) => {
     currentFilter = ownership;
     document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
     const activeBtn = document.getElementById("btn-" + ownership);
     if (activeBtn) activeBtn.classList.add("active");
-    renderCatalog(ownership);
+    renderCatalog();
   };
 
-  function renderCatalog(ownership) {
+  function renderCatalog() {
     const container = document.getElementById("catalogContainer");
-    const filtered = ownership === "All" 
-      ? allServices 
-      : allServices.filter(s => (s.ownership || "").toLowerCase() === ownership.toLowerCase());
+    const filtered = filterServicesByOwnership(allServices, currentFilter);
 
     if (!filtered.length) {
-      container.innerHTML = "<p>No services available under this filter currently.</p>";
+      container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 16px; color: #666;">No services available under "${currentFilter}" at the moment.</div>`;
       return;
     }
 
     container.innerHTML = filtered.map(s => `
       <div class="card">
         <div>
-          <span class="badge">${s.ownership || 'Shared'}</span>
-          <h3 style="margin:0 0 6px 0;padding-right:60px">${s.name}</h3>
-          <p style="font-size:1.4rem;font-weight:900;color:#193b35;margin:0 0 8px 0">K${s.price}</p>
-          <p style="font-size:.85rem;color:#555;margin:0">${s.description || ''}</p>
+          <div class="card-top">
+            <h3 class="card-title">${s.name}</h3>
+            <span class="badge">${s.ownership || 'Shared'}</span>
+          </div>
+          <p class="price">K${s.price}</p>
+          <p class="desc">${s.description || 'Instant digital delivery upon verification.'}</p>
         </div>
-        <a href="signup.html" class="btn">Order Service</a>
+        <a href="signup.html" class="btn">Order Now</a>
       </div>
     `).join("");
   }
