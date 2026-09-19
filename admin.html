@@ -1,109 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Portal | Let's Trade ZM</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#0f172a;color:#f8fafc}.wrap{max-width:950px;margin:auto;padding:20px}
-.card{background:#1e293b;border:1px solid #334155;padding:20px;border-radius:16px;margin-bottom:20px}
-input,select{width:100%;padding:10px;background:#0f172a;border:1px solid #475569;border-radius:8px;color:white;font:inherit;margin-top:4px}
-button{cursor:pointer;font-weight:700;border:0;border-radius:8px}
-.item-row{background:#0f172a;padding:12px;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; line-height: 1.5; }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 20px; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid #334155; padding-bottom: 16px; }
+  .header h1 { margin: 0; color: #38bdf8; font-size: 1.8rem; }
+  .card { background: #1e293b; border: 1px solid #334155; padding: 20px; border-radius: 16px; margin-bottom: 24px; }
+  .card h2 { margin-top: 0; font-size: 1.3rem; color: #f1f5f9; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  @media(max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+  label { font-weight: 600; font-size: 0.85rem; color: #94a3b8; display: block; margin-bottom: 4px; }
+  input, select { width: 100%; padding: 10px; background: #0f172a; border: 1px solid #475569; border-radius: 8px; color: white; font: inherit; }
+  input:focus, select:focus { outline: 2px solid #38bdf8; border-color: transparent; }
+  button { cursor: pointer; font-weight: 700; border: 0; border-radius: 8px; padding: 10px 16px; font-size: 0.9rem; transition: opacity 0.2s; }
+  button:hover { opacity: 0.9; }
+  .btn-primary { background: #b9d889; color: #0f172a; }
+  .btn-secondary { background: #64748b; color: white; }
+  .btn-edit { background: #38bdf8; color: #0f172a; }
+  .btn-delete { background: #ef4444; color: white; }
+  .btn-save { background: #22c55e; color: white; }
+  .item-row { background: #0f172a; border: 1px solid #334155; padding: 14px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .badge { padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+  .badge-shared { background: #334155; color: #38bdf8; }
+  .badge-private { background: #334155; color: #b9d889; }
+  .order-card { background: #0f172a; border: 1px solid #334155; padding: 16px; border-radius: 12px; margin-bottom: 12px; }
+  .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; }
+  .status-pending { background: #7c2d12; color: #fdba74; }
+  .status-completed { background: #14532d; color: #86efac; }
+  .status-cancelled { background: #7f1d1d; color: #fca5a5; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Admin Control Panel</h1>
 
-  <!-- PRICE CATALOG MANAGER -->
+<div class="wrap">
+  <div class="header">
+    <h1>Let's Trade ZM Admin</h1>
+    <button onclick="window.handleLogout()" class="btn-secondary">Log Out</button>
+  </div>
+
+  <!-- SECTION 1: PRICE CATALOG MANAGEMENT -->
   <div class="card">
-    <h2 style="margin-top:0">Manage Price Catalog</h2>
-    
-    <form id="serviceForm" style="display:grid;gap:12px;margin-bottom:20px">
+    <h2>Catalog & Service Pricing</h2>
+
+    <form id="serviceForm" style="margin-bottom: 20px;">
       <input type="hidden" id="serviceDocId">
-      
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <label>Service Name <input id="srvName" placeholder="e.g. Netflix Premium" required></label>
-        <label>Price (ZMW) <input id="srvPrice" type="number" placeholder="65" required></label>
+
+      <div class="form-grid">
+        <div>
+          <label>Service Name</label>
+          <input id="srvName" placeholder="e.g. Netflix Premium" required>
+        </div>
+        <div>
+          <label>Price (ZMW)</label>
+          <input id="srvPrice" type="number" placeholder="65" required>
+        </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <label>Ownership Type
+      <div class="form-grid">
+        <div>
+          <label>Ownership Type</label>
           <select id="srvOwnership" required>
             <option value="Shared">Shared</option>
             <option value="Private">Private</option>
           </select>
-        </label>
-        <label>Description <input id="srvDesc" placeholder="e.g. 1 Shared Profile | 4K Ultra HD"></label>
+        </div>
+        <div>
+          <label>Description</label>
+          <input id="srvDesc" placeholder="e.g. 1 Shared Profile | 4K UHD">
+        </div>
       </div>
 
-      <div style="display:flex;gap:10px">
-        <button type="submit" id="saveSrvBtn" style="background:#b9d889;color:#0f172a;padding:12px;flex:1">Save Service</button>
-        <button type="button" id="cancelEditBtn" style="display:none;background:#64748b;color:white;padding:12px" onclick="resetForm()">Cancel Edit</button>
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button type="submit" id="saveSrvBtn" class="btn-primary" style="flex:1;">Save Service</button>
+        <button type="button" id="cancelEditBtn" class="btn-secondary" style="display:none;" onclick="resetServiceForm()">Cancel</button>
       </div>
     </form>
 
-    <h3>Active Services Catalog</h3>
+    <h3 style="font-size: 1.1rem; color: #94a3b8; margin-bottom: 12px;">Active Services</h3>
     <div id="adminServicesList">Loading catalog...</div>
+  </div>
+
+  <!-- SECTION 2: CUSTOMER ORDERS MANAGEMENT -->
+  <div class="card">
+    <h2>Customer Orders</h2>
+    <div id="adminOrdersList">Loading customer orders...</div>
   </div>
 </div>
 
 <script type="module">
-  import { db, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "./firebase.js";
+  import { logoutUser } from "./app.js";
+  import { 
+    verifyAdminAccess, 
+    subscribeToOrders, 
+    updateOrderStatus, 
+    saveCatalogService, 
+    removeServiceFromCatalog 
+  } from "./admin.js";
+  import { db, collection, onSnapshot } from "./firebase.js";
 
-  const form = document.getElementById("serviceForm");
-  const list = document.getElementById("adminServicesList");
+  // Verify Admin Security Access
+  verifyAdminAccess(
+    (user) => console.log("Admin session active:", user.email),
+    (err) => {
+      alert(err);
+      window.location.href = "login.html";
+    }
+  );
 
-  // Real-time catalog view
+  window.handleLogout = () => logoutUser();
+
+  // 1. SERVICES CATALOG LOGIC
+  const serviceForm = document.getElementById("serviceForm");
+  const servicesList = document.getElementById("adminServicesList");
+
   onSnapshot(collection(db, "services"), (snapshot) => {
     if (snapshot.empty) {
-      list.innerHTML = "<p>No services found in database. Add one above.</p>";
+      servicesList.innerHTML = "<p style='color:#64748b;'>No services created yet.</p>";
       return;
     }
 
-    list.innerHTML = "";
+    servicesList.innerHTML = "";
     snapshot.forEach(docSnap => {
       const s = docSnap.data();
       const id = docSnap.id;
+      const isPrivate = (s.ownership || '').toLowerCase() === 'private';
 
-      list.innerHTML += `
+      servicesList.innerHTML += `
         <div class="item-row">
           <div>
-            <strong>${s.name}</strong> — <span style="color:#b9d889">K${s.price}</span> 
-            <small style="background:#334155;padding:2px 6px;border-radius:4px;margin-left:6px">${s.ownership || 'Shared'}</small>
-            <div style="font-size:.8rem;color:#94a3b8">${s.description || ''}</div>
+            <strong style="color:#f8fafc;font-size:1rem;">${s.name}</strong> 
+            <span class="badge ${isPrivate ? 'badge-private' : 'badge-shared'}">${s.ownership || 'Shared'}</span>
+            <span style="color:#b9d889;font-weight:800;margin-left:8px;">K${s.price}</span>
+            <div style="font-size:0.8rem;color:#94a3b8;">${s.description || 'No description'}</div>
           </div>
-          <div style="display:flex;gap:6px">
-            <button onclick="window.editService('${id}', \`${s.name}\`, ${s.price}, '${s.ownership || 'Shared'}', \`${s.description || ''}\`)" style="background:#38bdf8;color:#0f172a;padding:6px 12px">Edit</button>
-            <button onclick="window.deleteService('${id}')" style="background:#ef4444;color:white;padding:6px 12px">Delete</button>
+          <div style="display:flex;gap:6px;">
+            <button class="btn-edit" onclick="window.editService('${id}', \`${s.name}\`, ${s.price}, '${s.ownership || 'Shared'}', \`${s.description || ''}\`)">Edit</button>
+            <button class="btn-delete" onclick="window.deleteService('${id}')">Delete</button>
           </div>
         </div>
       `;
     });
   });
 
-  form.onsubmit = async (e) => {
+  serviceForm.onsubmit = async (e) => {
     e.preventDefault();
     const docId = document.getElementById("serviceDocId").value;
-    const data = {
+    const serviceData = {
       name: document.getElementById("srvName").value,
-      price: Number(document.getElementById("srvPrice").value),
+      price: document.getElementById("srvPrice").value,
       ownership: document.getElementById("srvOwnership").value,
-      description: document.getElementById("srvDesc").value,
-      updatedAt: new Date().toISOString()
+      description: document.getElementById("srvDesc").value
     };
 
-    try {
-      if (docId) {
-        await updateDoc(doc(db, "services", docId), data);
-        alert("Service updated successfully!");
-      } else {
-        await addDoc(collection(db, "services"), data);
-        alert("New service added to catalog!");
-      }
-      resetForm();
-    } catch (err) {
-      alert("Error saving service: " + err.message);
+    const res = await saveCatalogService(serviceData, docId || null);
+    if (res.success) {
+      alert(docId ? "Service updated!" : "Service added!");
+      resetServiceForm();
+    } else {
+      alert("Error: " + res.error);
     }
   };
 
@@ -118,20 +177,71 @@ button{cursor:pointer;font-weight:700;border:0;border-radius:8px}
   };
 
   window.deleteService = async (id) => {
-    if (confirm("Are you sure you want to delete this service from the catalog?")) {
-      try {
-        await deleteDoc(doc(db, "services", id));
-      } catch (err) {
-        alert("Error deleting service: " + err.message);
-      }
+    if (confirm("Are you sure you want to remove this service from the pricing catalog?")) {
+      const res = await removeServiceFromCatalog(id);
+      if (!res.success) alert("Error deleting: " + res.error);
     }
   };
 
-  window.resetForm = () => {
-    form.reset();
+  window.resetServiceForm = () => {
+    serviceForm.reset();
     document.getElementById("serviceDocId").value = "";
     document.getElementById("saveSrvBtn").textContent = "Save Service";
     document.getElementById("cancelEditBtn").style.display = "none";
+  };
+
+  // 2. CUSTOMER ORDERS LOGIC
+  const ordersList = document.getElementById("adminOrdersList");
+
+  subscribeToOrders((orders) => {
+    if (!orders.length) {
+      ordersList.innerHTML = "<p style='color:#64748b;'>No customer orders found.</p>";
+      return;
+    }
+
+    ordersList.innerHTML = orders.map(o => {
+      const statusClass = o.status === 'Completed' ? 'status-completed' : (o.status === 'Cancelled' ? 'status-cancelled' : 'status-pending');
+      const serviceNames = (o.services || []).map(s => s.name).join(", ");
+
+      return `
+        <div class="order-card">
+          <div style="display:flex;justify-space-between;align-items:flex-start;margin-bottom:8px;">
+            <div>
+              <strong style="font-size:1.1rem;color:#38bdf8;">${o.orderId || o.id}</strong>
+              <span class="status-badge ${statusClass}">${o.status}</span>
+            </div>
+            <span style="font-size:1.2rem;font-weight:800;color:#b9d889;">K${o.total}</span>
+          </div>
+
+          <div style="font-size:0.9rem;color:#cbd5e1;margin-bottom:8px;">
+            <strong>Customer:</strong> ${o.name} (${o.number}) | ${o.email}<br>
+            <strong>Payment Method:</strong> ${o.paymentMethod}<br>
+            <strong>Services Requested:</strong> ${serviceNames}
+          </div>
+
+          <div style="background:#1e293b;padding:10px;border-radius:8px;margin-top:10px;">
+            <label style="color:#94a3b8;font-size:0.8rem;">Assigned Login Credentials / Account Details:</label>
+            <input id="cred-${o.id}" value="${o.assignedCredentials || ''}" placeholder="e.g. Email: user@pass.com | Profile 2 | PIN: 1234" style="margin-bottom:8px;">
+
+            <div style="display:flex;gap:8px;">
+              <button class="btn-save" onclick="window.saveOrder('${o.id}', 'Completed')">Mark Completed & Save</button>
+              <button class="btn-secondary" onclick="window.saveOrder('${o.id}', 'Pending Verification')">Set Pending</button>
+              <button class="btn-delete" onclick="window.saveOrder('${o.id}', 'Cancelled')">Cancel Order</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+  });
+
+  window.saveOrder = async (orderDocId, status) => {
+    const creds = document.getElementById("cred-" + orderDocId).value;
+    const res = await updateOrderStatus(orderDocId, status, creds);
+    if (res.success) {
+      alert("Order updated!");
+    } else {
+      alert("Error updating order: " + res.error);
+    }
   };
 </script>
 </body>
