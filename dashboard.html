@@ -2,66 +2,73 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>My Dashboard | Let's Trade ZM</title><meta name="description" content="Customer subscription dashboard for Let's Trade ZM.">
+<title>My Dashboard | Let's Trade ZM</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#f7f3e8;color:#15162a}.top{background:#10152b;color:white;padding:18px}.topin{max-width:900px;margin:auto;display:flex;justify-content:space-between;align-items:center}.top button{background:transparent;color:white;border:1px solid #ffffff55;padding:8px 12px;border-radius:9px;cursor:pointer}.wrap{max-width:900px;margin:auto;padding:18px}.card{background:#fff;border:1px solid #ddd6c6;border-radius:16px;padding:17px;margin-bottom:14px}.service{border-left:4px solid #315f50;padding:13px;margin:10px 0;background:#faf9f4;border-radius:8px}.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#e5f0d8;font-weight:700;font-size:.8rem}.pending{background:#fff0c9}.offer{background:#193b35;color:white}.contact{display:block;text-decoration:none;text-align:center;background:#315f50;color:white;padding:13px;border-radius:11px;font-weight:800}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#f7f3e8;color:#15162a}.top{background:#10152b;color:white;padding:18px;display:flex;justify-content:space-between;align-items:center}.wrap{max-width:900px;margin:auto;padding:18px}.card{background:#fff;border:1px solid #ddd6c6;border-radius:16px;padding:17px;margin-bottom:14px}
+.service{border-left:4px solid #315f50;padding:13px;margin:10px 0;background:#faf9f4;border-radius:8px}.badge{display:inline-block;padding:4px 8px;border-radius:12px;font-size:.8rem;font-weight:700}.pending{background:#fef08a;color:#713f12}.approved{background:#bbf7d0;color:#14532d}
+.creds-box{background:#10152b;color:#b9d889;padding:12px;border-radius:8px;margin-top:8px;font-family:monospace;font-size:.95rem}
 </style>
 </head>
 <body>
-<header class="top"><div class="topin"><strong>Let's Trade ZM</strong><button id="logoutBtn">Sign out</button></div></header>
+<header class="top"><strong>Let's Trade ZM</strong><button id="logoutBtn" style="background:transparent;color:white;border:1px solid #fff5;padding:6px 12px;border-radius:6px">Sign out</button></header>
 <main class="wrap">
-  <div class="card"><h1>My Dashboard</h1><p id="welcome">Loading user details...</p><small id="number"></small></div>
-  <div class="card"><h2>Active Subscriptions</h2><div id="services">Loading orders...</div></div>
-  <div class="card offer"><h2>Special Offers</h2><p>Check with admin for current promotions and available subscription offers.</p></div>
-  <div class="card"><h2>Notifications</h2><div id="notifications">No new notifications.</div></div>
-  <div class="card"><h2>Need Help?</h2><p>Contact the Let's Trade ZM administrator for payment verification, subscription renewal or account access.</p><a class="contact" href="https://wa.me/" target="_blank">Contact Admin</a></div>
+  <div class="card"><h1 id="welcome">My Dashboard</h1><small id="userMail"></small></div>
+  <div class="card"><h2>My Subscriptions</h2><div id="ordersContainer">Loading subscriptions...</div></div>
+  <div class="card" style="background:#193b35;color:white">
+    <h2>Payment Info</h2>
+    <p>Airtel Money: <strong>0979276543</strong> (Mwiza Kondowe)</p>
+  </div>
 </main>
 
 <script type="module">
-  import { db, auth } from "./firebase-config.js";
+  import { auth, db } from "./firebase.js";
   import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  const welcomeEl = document.getElementById("welcome");
-  const numberEl = document.getElementById("number");
-  const servicesEl = document.getElementById("services");
-  const logoutBtn = document.getElementById("logoutBtn");
+  const ordersContainer = document.getElementById("ordersContainer");
 
-  // Auth Guard & Dynamic Firestore Listener
   onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      window.location.href = "login.html";
-      return;
-    }
+    if (!user) { window.location.href = "login.html"; return; }
 
-    welcomeEl.textContent = "Welcome, " + (user.email || "Customer") + ".";
-    numberEl.textContent = "UID: " + user.uid;
+    document.getElementById("welcome").textContent = "Welcome back!";
+    document.getElementById("userMail").textContent = user.email;
 
-    // Fetch live user orders from Firestore
-    const q = query(collection(db, "orders"), where("userId", "==", user.uid));
+    const q = query(collection(db, "orders"), where("email", "==", user.email));
     onSnapshot(q, (snapshot) => {
       if (snapshot.empty) {
-        servicesEl.innerHTML = "<p>No assigned active subscriptions yet.</p>";
+        ordersContainer.innerHTML = "<p>No active orders found.</p>";
         return;
       }
 
-      const orders = [];
-      snapshot.forEach(doc => orders.push(doc.data()));
+      ordersContainer.innerHTML = "";
+      snapshot.forEach(docSnap => {
+        const o = docSnap.data();
+        const isApproved = o.status === "Approved";
 
-      servicesEl.innerHTML = orders.map(o => `
-        <div class="service">
-          <strong>${o.service || (Array.isArray(o.services) ? o.services.map(s => s.name).join(", ") : "Subscription")}</strong><br>
-          K${o.price || o.total || 0}<br>
-          <span class="badge ${o.status === 'Approved' ? '' : 'pending'}">${o.status || 'Pending admin assignment'}</span>
-        </div>
-      `).join("");
+        ordersContainer.innerHTML += `
+          <div class="service">
+            <div style="display:flex;justify-content:space-between">
+              <strong>${o.orderId}</strong>
+              <span class="badge ${isApproved ? 'approved' : 'pending'}">${o.status}</span>
+            </div>
+            <p><strong>Services:</strong> ${o.services.map(s => s.name).join(", ")}<br>
+            <strong>Total:</strong> K${o.total}</p>
+
+            ${isApproved ? `
+              <div class="creds-box">
+                <strong>🔑 Account Access Details:</strong><br>
+                ${o.assignedCredentials || 'Credentials pending assignment.'}
+              </div>
+            ` : `
+              <p style="font-size:.85rem;color:#666"><em>Account details will be unlocked here once your Mobile Money payment is confirmed by Admin.</em></p>
+            `}
+          </div>
+        `;
+      });
     });
   });
 
-  logoutBtn.addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "login.html";
-  });
+  document.getElementById("logoutBtn").onclick = () => signOut(auth);
 </script>
 </body>
 </html>
