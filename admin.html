@@ -1,92 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Admin Portal | Let's Trade ZM</title>
-<meta name="robots" content="noindex,nofollow">
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,sans-serif;background:#f2efe6;color:#15162a}
-.top{background:#10152b;color:white;padding:16px}
-.topin{max-width:1100px;margin:auto;display:flex;justify-content:space-between;align-items:center}
-.top button{padding:8px 12px;background:transparent;border:1px solid #ffffff66;color:white;border-radius:8px;cursor:pointer}
-.wrap{max-width:1100px;margin:auto;padding:18px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.stat,.panel{background:#fff;border:1px solid #ddd6c6;border-radius:14px;padding:15px}
-.stat b{font-size:1.7rem}
-.panel{margin-top:14px;overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:650px}
-th,td{text-align:left;padding:10px;border-bottom:1px solid #ddd6c6}
-button.action{border:0;border-radius:7px;padding:7px 10px;cursor:pointer;background:#193b35;color:white;margin:2px}
-.deny{background:#7b2732!important}
-.formgrid{display:grid;grid-template-columns:1fr 1fr 100px;gap:10px}
-.formgrid input{padding:10px;border:1px solid #ccc;border-radius:8px}
-@media(max-width:650px){.stats,.formgrid{grid-template-columns:1fr}}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#10152b;color:#f7f3e8;padding:16px}.card{background:#19223c;border-radius:12px;padding:16px;margin-bottom:14px}input,textarea,select{width:100%;padding:8px;margin-top:6px;background:#0f172a;color:white;border:1px solid #334155;border-radius:6px}button{background:#b9d889;color:#10152b;font-weight:800;border:0;padding:10px;border-radius:6px;cursor:pointer;margin-top:8px}
 </style>
 </head>
 <body>
-<header class="top">
-  <div class="topin">
-    <strong>Let's Trade ZM · Admin</strong>
-    <button onclick="logout()">Sign out</button>
-  </div>
-</header>
+<h1>Let's Trade ZM — Admin</h1>
 
-<main class="wrap">
-  <h1>Admin Portal</h1>
-  
-  <div class="stats">
-    <div class="stat">Customers<br><b id="customers">0</b></div>
-    <div class="stat">Orders<br><b id="orders">0</b></div>
-    <div class="stat">Active<br><b id="active">0</b></div>
-  </div>
+<div class="card">
+  <h2>1. Add Inventory Account</h2>
+  <form id="addAccountForm">
+    <label>Service Name <input id="accService" placeholder="e.g. Netflix Premium" required></label>
+    <label>Credentials / Details <textarea id="accDetails" placeholder="Email | Password | PIN" required></textarea></label>
+    <button type="submit">Save Account to Inventory</button>
+  </form>
+</div>
 
-  <section class="panel">
-    <h2>Add Price List Item</h2>
-    <div class="formgrid">
-      <input id="pname" placeholder="Service name">
-      <input id="pprice" type="number" placeholder="Price (K)">
-      <button class="action" onclick="addPrice()">Add</button>
-    </div>
-  </section>
+<div class="card">
+  <h2>2. Customer Orders</h2>
+  <div id="ordersList">Loading...</div>
+</div>
 
-  <section class="panel">
-    <h2>Orders / Customer Access</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Order</th>
-          <th>Customer</th>
-          <th>Services</th>
-          <th>Total</th>
-          <th>Status</th>
-          <th>Access</th>
-        </tr>
-      </thead>
-      <tbody id="ordersTable">
-        <tr><td colspan="6">Loading orders...</td></tr>
-      </tbody>
-    </table>
-  </section>
+<script type="module">
+  import { auth, db } from "./firebase.js";
+  import { collection, onSnapshot, addDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  <section class="panel">
-    <h2>Price List Records</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Service</th>
-          <th>Price</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="priceTable">
-        <tr><td colspan="3">Loading price list...</td></tr>
-      </tbody>
-    </table>
-  </section>
-</main>
+  // Inventory submission
+  document.getElementById("addAccountForm").onsubmit = async (e) => {
+    e.preventDefault();
+    await addDoc(collection(db, "accounts"), {
+      serviceName: document.getElementById("accService").value,
+      credentials: document.getElementById("accDetails").value,
+      isAssigned: false,
+      createdAt: new Date().toISOString()
+    });
+    alert("Account added!");
+    e.target.reset();
+  };
 
-<script type="module" src="admin.js"></script>
+  // Listen to Customer Orders
+  onSnapshot(collection(db, "orders"), (snapshot) => {
+    const container = document.getElementById("ordersList");
+    container.innerHTML = "";
+    snapshot.forEach((orderDoc) => {
+      const o = orderDoc.data();
+      const id = orderDoc.id;
+
+      container.innerHTML += `
+        <div style="background:#10152b;padding:12px;margin-bottom:10px;border-radius:8px">
+          <strong>${o.orderId} — ${o.name} (${o.number})</strong><br>
+          <small>Status: ${o.status} | Total: K${o.total}</small><br>
+          <small>Services: ${o.services.map(s => s.name).join(", ")}</small>
+          
+          <textarea id="creds-${id}" placeholder="Enter or paste account logins">${o.assignedCredentials || ''}</textarea>
+          <button onclick="window.approveOrder('${id}')">Confirm Payment & Assign Access</button>
+        </div>
+      `;
+    });
+  });
+
+  window.approveOrder = async (id) => {
+    const creds = document.getElementById(`creds-${id}`).value;
+    await updateDoc(doc(db, "orders", id), {
+      status: "Approved",
+      assignedCredentials: creds
+    });
+    alert("Order Approved & Login Details Sent to Customer Dashboard!");
+  };
+</script>
 </body>
 </html>
