@@ -4,38 +4,64 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>My Dashboard | Let's Trade ZM</title><meta name="description" content="Customer subscription dashboard for Let's Trade ZM.">
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#f7f3e8;color:#15162a}.top{background:#10152b;color:white;padding:18px}.topin{max-width:900px;margin:auto;display:flex;justify-content:space-between;align-items:center}.top button{background:transparent;color:white;border:1px solid #ffffff55;padding:8px 12px;border-radius:9px}.wrap{max-width:900px;margin:auto;padding:18px}.card{background:#fff;border:1px solid #ddd6c6;border-radius:16px;padding:17px;margin-bottom:14px}.service{border-left:4px solid #315f50;padding:13px;margin:10px 0;background:#faf9f4;border-radius:8px}.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#e5f0d8;font-weight:700;font-size:.8rem}.pending{background:#fff0c9}.offer{background:#193b35;color:white}.contact{display:block;text-decoration:none;text-align:center;background:#315f50;color:white;padding:13px;border-radius:11px;font-weight:800}
-</style></head>
-<body><header class="top"><div class="topin"><strong>Let's Trade ZM</strong><button onclick="logout()">Sign out</button></div></header>
-<main class="wrap"><div class="card"><h1>My Dashboard</h1><p id="welcome">Welcome.</p><small id="number"></small></div>
-<div class="card"><h2>Active Subscriptions</h2><div id="services"></div></div>
-<div class="card offer"><h2>Special Offers</h2><p>Check with admin for current promotions and available subscription offers.</p></div>
-<div class="card"><h2>Notifications</h2><div id="notifications">No new notifications.</div></div>
-<div class="card"><h2>Need Help?</h2><p>Contact the Let's Trade ZM administrator for payment verification, subscription renewal or account access.</p><a class="contact" href="https://wa.me/">Contact Admin</a></div>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#f7f3e8;color:#15162a}.top{background:#10152b;color:white;padding:18px}.topin{max-width:900px;margin:auto;display:flex;justify-content:space-between;align-items:center}.top button{background:transparent;color:white;border:1px solid #ffffff55;padding:8px 12px;border-radius:9px;cursor:pointer}.wrap{max-width:900px;margin:auto;padding:18px}.card{background:#fff;border:1px solid #ddd6c6;border-radius:16px;padding:17px;margin-bottom:14px}.service{border-left:4px solid #315f50;padding:13px;margin:10px 0;background:#faf9f4;border-radius:8px}.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#e5f0d8;font-weight:700;font-size:.8rem}.pending{background:#fff0c9}.offer{background:#193b35;color:white}.contact{display:block;text-decoration:none;text-align:center;background:#315f50;color:white;padding:13px;border-radius:11px;font-weight:800}
+</style>
+</head>
+<body>
+<header class="top"><div class="topin"><strong>Let's Trade ZM</strong><button id="logoutBtn">Sign out</button></div></header>
+<main class="wrap">
+  <div class="card"><h1>My Dashboard</h1><p id="welcome">Loading user details...</p><small id="number"></small></div>
+  <div class="card"><h2>Active Subscriptions</h2><div id="services">Loading orders...</div></div>
+  <div class="card offer"><h2>Special Offers</h2><p>Check with admin for current promotions and available subscription offers.</p></div>
+  <div class="card"><h2>Notifications</h2><div id="notifications">No new notifications.</div></div>
+  <div class="card"><h2>Need Help?</h2><p>Contact the Let's Trade ZM administrator for payment verification, subscription renewal or account access.</p><a class="contact" href="https://wa.me/" target="_blank">Contact Admin</a></div>
 </main>
-<script>
+
+<script type="module">
   import { db, auth } from "./firebase-config.js";
-import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { collection, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Example: Save a trade/transaction order
-async function createOrder(tradeData) {
-  const user = auth.currentUser;
-  if (!user) return;
+  const welcomeEl = document.getElementById("welcome");
+  const numberEl = document.getElementById("number");
+  const servicesEl = document.getElementById("services");
+  const logoutBtn = document.getElementById("logoutBtn");
 
-  await addDoc(collection(db, "orders"), {
-    userId: user.uid,
-    userEmail: user.email,
-    details: tradeData,
-    createdAt: new Date()
+  // Auth Guard & Dynamic Firestore Listener
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    welcomeEl.textContent = "Welcome, " + (user.email || "Customer") + ".";
+    numberEl.textContent = "UID: " + user.uid;
+
+    // Fetch live user orders from Firestore
+    const q = query(collection(db, "orders"), where("userId", "==", user.uid));
+    onSnapshot(q, (snapshot) => {
+      if (snapshot.empty) {
+        servicesEl.innerHTML = "<p>No assigned active subscriptions yet.</p>";
+        return;
+      }
+
+      const orders = [];
+      snapshot.forEach(doc => orders.push(doc.data()));
+
+      servicesEl.innerHTML = orders.map(o => `
+        <div class="service">
+          <strong>${o.service || (Array.isArray(o.services) ? o.services.map(s => s.name).join(", ") : "Subscription")}</strong><br>
+          K${o.price || o.total || 0}<br>
+          <span class="badge ${o.status === 'Approved' ? '' : 'pending'}">${o.status || 'Pending admin assignment'}</span>
+        </div>
+      `).join("");
+    });
   });
-}
 
-  
-const current=localStorage.getItem("ltzm_current_number")||"Customer",order=JSON.parse(localStorage.getItem("ltzm_last_order")||"null");
-document.getElementById("welcome").textContent="Welcome, "+(order?.name||"Customer")+".";document.getElementById("number").textContent="Number: "+current;
-const box=document.getElementById("services");
-if(order?.services?.length){box.innerHTML=order.services.map(s=>`<div class="service"><strong>${s.name}</strong><br>K${s.price}<br><span class="badge pending">Pending admin assignment</span></div>`).join("")}else box.innerHTML="<p>No assigned active subscriptions yet.</p>";
-function logout(){localStorage.removeItem("ltzm_current_number");location.href="login.html"}
+  logoutBtn.addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "login.html";
+  });
 </script>
 </body>
 </html>
