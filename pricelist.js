@@ -1,7 +1,6 @@
 /*
 ============================================================
-LET'S TRADE ZM
-PRICELIST
+LET'S TRADE ZM — PRICELIST MODULE
 ============================================================
 */
 
@@ -18,7 +17,6 @@ const STATIC_SERVICES = [
   { id:"cover-art-logo", name:"Cover Art / Logo Design", price:50, source:"static", active:true }
 ];
 
-/* Database services will be added here later. */
 let DATABASE_SERVICES = [];
 
 function getPriceList() {
@@ -26,42 +24,31 @@ function getPriceList() {
 }
 
 function getActiveServices() {
-  return getPriceList().filter(function(service) {
-    return service.active === true;
-  });
+  return getPriceList().filter(service => service.active === true);
 }
 
 function renderPriceList() {
   const list = document.getElementById("services");
-
-  if (!list) {
-    console.error("Let's Trade ZM: #services element not found.");
-    return;
-  }
+  if (!list) return;
 
   const services = getActiveServices();
-
   if (!services.length) {
     list.innerHTML = "<p>No services are currently available.</p>";
     return;
   }
 
-  list.innerHTML = services.map(function(service) {
-    return `
-      <label class="service">
-        <input
-          type="checkbox"
-          value="${service.price}"
-          data-name="${service.name}"
-          data-id="${service.id}"
-          onchange="calc()"
-        >
-        ${service.name}
-        <br>
-        <span class="cost">K${service.price}</span>
-      </label>
-    `;
-  }).join("");
+  list.innerHTML = services.map(service => `
+    <label class="service" style="display:block;margin:8px 0;">
+      <input
+        type="checkbox"
+        value="${service.price}"
+        data-name="${service.name}"
+        data-id="${service.id}"
+        onchange="if(typeof calc === 'function') calc();"
+      >
+      ${service.name} — <span class="cost"><b>K${service.price}</b></span>
+    </label>
+  `).join("");
 
   if (typeof calc === "function") {
     calc();
