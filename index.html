@@ -31,7 +31,7 @@ footer{background:#10152b;color:#dce0e8;text-align:center;padding:28px 18px;font
 <section id="prices"><h2 class="section-title">Price List</h2><div id="priceGrid" class="grid"></div><p class="muted">Prices may change depending on exchange rate and service availability.</p></section>
 <section><h2 class="section-title">How to Sign In</h2><div class="steps">
 <div class="step"><b>Open Get Started</b><br>Use the sign-in page to access your customer account.</div>
-<div class="step"><b>Enter your number</b><br>Use the customer number registered with Let's Trade ZM.</div>
+<div class="step"><b>Enter your credentials</b><br>Use the customer account registered with Let's Trade ZM.</div>
 <div class="step"><b>Open your dashboard</b><br>If your account has an active assigned subscription, your services appear there.</div>
 </div></section>
 <section id="faq"><h2 class="section-title">FAQs</h2>
@@ -42,16 +42,21 @@ footer{background:#10152b;color:#dce0e8;text-align:center;padding:28px 18px;font
 </section>
 </main>
 <footer>© <span id="year"></span> Let's Trade ZM · Zambian Subscription Service Provider</footer>
+
+<script src="pricelist.js"></script>
 <script>
-const prices=[
-["Netflix Premium","Shared / Profile","K65 / month"],["Netflix Premium","Private Profile","K100 / month"],
-["Prime Video","All Devices","K80 / month"],["Spotify","Shared / Slot","K60 / month"],
-["Apple Music","Shared / Slot","K80 / month"],["iCloud 50GB","Shared / Storage","K50 / month"],
-["iCloud 200GB","Shared / Storage","K80 / month"],["Gemini AI Plus","AI subscription","K50 / month"],
-["Music Distribution","Spotify, Apple Music, Amazon etc.","K100"],["Cover Art / Logo Design","Design service","K50"]
-];
-document.getElementById("priceGrid").innerHTML=prices.map(p=>`<article class="card"><b>${p[0]}</b><div class="muted">${p[1]}</div><div class="price">${p[2]}</div></article>`).join("");
-document.getElementById("year").textContent=new Date().getFullYear();
+  document.getElementById("year").textContent = new Date().getFullYear();
+  
+  // Render Price Grid from pricelist.js
+  const grid = document.getElementById("priceGrid");
+  if (typeof getActiveServices === "function") {
+    grid.innerHTML = getActiveServices().map(s => `
+      <article class="card">
+        <b>${s.name}</b>
+        <div class="price">K${s.price}</div>
+      </article>
+    `).join("");
+  }
 </script>
 </body>
 </html>
