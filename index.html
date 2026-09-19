@@ -1,60 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Let's Trade ZM | Zambian Subscription Services</title>
-<meta name="description" content="Let's Trade ZM is a Zambian online subscription service provider helping customers access and manage digital subscriptions.">
-<meta name="robots" content="index,follow">
-<meta name="theme-color" content="#10152b">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Let's Trade ZM | Subscriptions & Digital Services</title>
 <style>
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,-apple-system,sans-serif;background:#f7f3e8;color:#15162a;line-height:1.5}
-header{background:#10152b;color:white;position:sticky;top:0;z-index:10}.nav{max-width:1050px;margin:auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:800;font-size:1.1rem}.nav a{color:white;text-decoration:none;margin-left:14px;font-size:.9rem}
-main{max-width:1050px;margin:auto}.hero{padding:58px 18px 42px;background:linear-gradient(135deg,#10152b,#193b35);color:white;border-radius:0 0 28px 28px}.hero h1{font-size:clamp(2.1rem,8vw,4rem);line-height:1;margin:0 0 14px}.hero p{max-width:650px;color:#e6e8ef}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.btn{border:0;border-radius:12px;padding:13px 18px;font-weight:700;text-decoration:none;display:inline-block;cursor:pointer}.primary{background:#b9d889;color:#10152b}.secondary{background:#fff;color:#10152b}
-section{padding:42px 18px}.section-title{margin:0 0 18px;font-size:1.6rem}.offer{background:#fff;border:1px solid #ddd6c6;border-radius:18px;padding:20px}.offer strong{font-size:1.15rem}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}.card{background:#fff;border:1px solid #ddd6c6;border-radius:16px;padding:17px}.price{font-size:1.25rem;font-weight:800;margin-top:8px}.muted{color:#666}.steps{counter-reset:step}.step{padding:14px 0;border-bottom:1px solid #ddd6c6}.step b:before{counter-increment:step;content:counter(step) ". ";color:#315f50}
-details{background:#fff;border:1px solid #ddd6c6;border-radius:12px;padding:14px;margin:9px 0}summary{font-weight:700;cursor:pointer}
-footer{background:#10152b;color:#dce0e8;text-align:center;padding:28px 18px;font-size:.9rem}
-@media(max-width:650px){.nav a{margin-left:8px}.nav a.hide-mobile{display:none}}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;background:#f7f3e8;color:#15162a}
+.wrap{max-width:900px;margin:auto;padding:20px}
+.head{background:#10152b;color:white;padding:28px;border-radius:18px;margin-bottom:20px;text-align:center}
+.head h1{margin:0 0 6px 0;color:#b9d889}
+.filter-btn{background:#e8e2d2;border:1px solid #cfc9bb;padding:8px 16px;border-radius:20px;font-weight:700;cursor:pointer;color:#10152b}
+.filter-btn.active{background:#193b35;color:white;border-color:#193b35}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.card{background:white;border:1px solid #ddd6c6;padding:18px;border-radius:16px;position:relative;display:flex;flex-direction:column;justify-content:space-between}
+.badge{font-size:.75rem;padding:4px 8px;background:#10152b;color:#b9d889;border-radius:6px;font-weight:700;position:absolute;top:16px;right:16px}
+.btn{display:block;text-align:center;background:#193b35;color:white;padding:10px;border-radius:10px;text-decoration:none;font-weight:700;margin-top:12px}
 </style>
 </head>
 <body>
-<header><nav class="nav"><div class="brand">Let's Trade ZM</div><div><a href="#prices">Prices</a><a href="#faq">FAQ</a><a class="hide-mobile" href="login.html">Sign in</a></div></nav></header>
-<main>
-<section class="hero">
-<p>🇿🇲 Zambian Subscription Service Provider</p>
-<h1>Manage your digital subscriptions simply.</h1>
-<p>Let's Trade ZM helps you access and manage selected premium digital subscription services through one simple online manager.</p>
-<div class="actions"><a class="btn primary" href="login.html">Get Started</a><a class="btn secondary" href="#prices">View Price List</a></div>
-</section>
-<section><div class="offer"><strong>Special Offer</strong><p id="offerText" style="margin-bottom:0">Selected subscription offers and prices are updated regularly. Check the price list before placing an order.</p></div></section>
-<section id="prices"><h2 class="section-title">Price List</h2><div id="priceGrid" class="grid"></div><p class="muted">Prices may change depending on exchange rate and service availability.</p></section>
-<section><h2 class="section-title">How to Sign In</h2><div class="steps">
-<div class="step"><b>Open Get Started</b><br>Use the sign-in page to access your customer account.</div>
-<div class="step"><b>Enter your credentials</b><br>Use the customer account registered with Let's Trade ZM.</div>
-<div class="step"><b>Open your dashboard</b><br>If your account has an active assigned subscription, your services appear there.</div>
-</div></section>
-<section id="faq"><h2 class="section-title">FAQs</h2>
-<details><summary>How do I order a subscription?</summary><p>Select the service from the price list, continue to signup/order, and submit your customer details.</p></details>
-<details><summary>When do I receive account details?</summary><p>Account access is provided after the order and payment have been verified by the administrator.</p></details>
-<details><summary>Can I have more than one service?</summary><p>Yes. The signup page is designed to allow multiple services in one order.</p></details>
-<details><summary>What if my subscription expires?</summary><p>Your dashboard should show the service as expired and active access should no longer be displayed.</p></details>
-</section>
-</main>
-<footer>© <span id="year"></span> Let's Trade ZM · Zambian Subscription Service Provider</footer>
+<div class="wrap">
+  <header class="head">
+    <h1>Let's Trade ZM</h1>
+    <p>Premium Digital Subscriptions & Services at Affordable Rates</p>
+  </header>
 
-<script src="pricelist.js"></script>
-<script>
-  document.getElementById("year").textContent = new Date().getFullYear();
-  
-  // Render Price Grid from pricelist.js
-  const grid = document.getElementById("priceGrid");
-  if (typeof getActiveServices === "function") {
-    grid.innerHTML = getActiveServices().map(s => `
-      <article class="card">
-        <b>${s.name}</b>
-        <div class="price">K${s.price}</div>
-      </article>
+  <section>
+    <h2>Services & Catalog</h2>
+    
+    <!-- Ownership Filter Tabs -->
+    <div style="display:flex;gap:10px;margin-bottom:20px">
+      <button class="filter-btn active" id="btn-All" onclick="filterCatalog('All')">All</button>
+      <button class="filter-btn" id="btn-Shared" onclick="filterCatalog('Shared')">Shared</button>
+      <button class="filter-btn" id="btn-Private" onclick="filterCatalog('Private')">Private</button>
+    </div>
+
+    <div id="catalogContainer" class="grid">
+      <p>Loading active price list...</p>
+    </div>
+  </section>
+</div>
+
+<script type="module">
+  import { db, collection, onSnapshot } from "./firebase.js";
+
+  let allServices = [];
+  let currentFilter = "All";
+
+  onSnapshot(collection(db, "services"), (snapshot) => {
+    allServices = [];
+    snapshot.forEach(docSnap => {
+      allServices.push({ id: docSnap.id, ...docSnap.data() });
+    });
+    renderCatalog(currentFilter);
+  });
+
+  window.filterCatalog = (ownership) => {
+    currentFilter = ownership;
+    document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+    const activeBtn = document.getElementById("btn-" + ownership);
+    if (activeBtn) activeBtn.classList.add("active");
+    renderCatalog(ownership);
+  };
+
+  function renderCatalog(ownership) {
+    const container = document.getElementById("catalogContainer");
+    const filtered = ownership === "All" 
+      ? allServices 
+      : allServices.filter(s => (s.ownership || "").toLowerCase() === ownership.toLowerCase());
+
+    if (!filtered.length) {
+      container.innerHTML = "<p>No services available under this filter currently.</p>";
+      return;
+    }
+
+    container.innerHTML = filtered.map(s => `
+      <div class="card">
+        <div>
+          <span class="badge">${s.ownership || 'Shared'}</span>
+          <h3 style="margin:0 0 6px 0;padding-right:60px">${s.name}</h3>
+          <p style="font-size:1.4rem;font-weight:900;color:#193b35;margin:0 0 8px 0">K${s.price}</p>
+          <p style="font-size:.85rem;color:#555;margin:0">${s.description || ''}</p>
+        </div>
+        <a href="signup.html" class="btn">Order Service</a>
+      </div>
     `).join("");
   }
 </script>
