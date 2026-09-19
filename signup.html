@@ -1,184 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Get Started | Let's Trade ZM</title>
-<meta name="description" content="Choose subscription services and submit your customer details to Let's Trade ZM.">
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,sans-serif;background:#f7f3e8;color:#15162a}
-.wrap{max-width:850px;margin:auto;padding:20px}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#f7f3e8;color:#15162a}.wrap{max-width:850px;margin:auto;padding:20px}
 .head{background:#10152b;color:white;padding:22px;border-radius:18px;margin-bottom:16px}
-.head h1{margin:0}
 .section{background:white;border:1px solid #ddd6c6;border-radius:18px;padding:20px;margin-bottom:16px}
-h2{margin-top:0}
-.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-.service{border:1px solid #ddd6c6;border-radius:12px;padding:13px;cursor:pointer;display:block}
-.service input{margin-right:8px}
-.cost{font-weight:800}
-.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:600px){.fields{grid-template-columns:1fr}}
-label{font-weight:700;font-size:.9rem}
-input,select{width:100%;padding:12px;border:1px solid #cfc9bb;border-radius:10px;margin-top:6px;font:inherit}
-button{width:100%;padding:14px;border:0;border-radius:11px;background:#193b35;color:#fff;font-weight:800;font-size:1rem;cursor:pointer}
-.total{font-size:1.4rem;font-weight:900;margin:15px 0}
-.msg{padding:12px;margin-top:12px;border-radius:10px;display:none;background:#e2f0d9;color:#1e4620;font-weight:600}
+.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.service-item{background:#faf9f4;border:1px solid #e5dfd3;padding:12px;border-radius:10px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.service-item input{width:auto;margin:0}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:600px){.fields{grid-template-columns:1fr}}
+label{font-weight:700;font-size:.9rem}input,select{width:100%;padding:12px;border:1px solid #cfc9bb;border-radius:10px;margin-top:6px;font:inherit}
+button,.btn{display:block;width:100%;padding:14px;border:0;border-radius:11px;background:#193b35;color:#fff;font-weight:800;font-size:1rem;cursor:pointer;text-align:center;text-decoration:none;margin-top:10px}
+.receipt{background:#f0fdf4;border:2px solid #22c55e;padding:20px;border-radius:16px;display:none}
+.pay-info{background:#fff;border:1px dashed #16a34a;padding:14px;border-radius:12px;margin:14px 0}
 </style>
 </head>
 <body>
 <div class="wrap">
+<header class="head"><h1>Let's Trade ZM</h1><p>Choose your services and create your customer request.</p></header>
 
-<header class="head">
-<h1>Let's Trade ZM</h1>
-<p>Choose your services and create your customer request.</p>
-</header>
-
+<div id="orderForm">
 <form id="signup">
-
 <section class="section">
-<h2>1. Choose Services</h2>
-
-<div id="services" class="services">
-<!-- PriceList is loaded from pricelist.js -->
-</div>
-
-<div class="total">
-Total: <span id="total">K0</span>
-</div>
+  <h2>1. Choose Services</h2>
+  <div id="services" class="services">Loading available services...</div>
+  <div style="font-size:1.4rem;font-weight:900;margin-top:15px">Total: <span id="total">K0</span></div>
 </section>
 
 <section class="section">
-<h2>2. Customer Details</h2>
-
-<div class="fields">
-
-<label>
-Name
-<input id="name" name="name" type="text" required>
-</label>
-
-<label>
-Phone / Number
-<input id="number" name="number" type="tel" inputmode="tel" required>
-</label>
-
-<label>
-Email Address
-<input id="email" name="email" type="email" required>
-</label>
-
-<label>
-Payment Method
-<select id="payment" name="payment">
-<option>Mobile Money</option>
-<option>Bank</option>
-<option>Cash</option>
-<option>Other</option>
-</select>
-</label>
-
-</div>
+  <h2>2. Customer Details</h2>
+  <div class="fields">
+    <label>Name <input id="name" required></label>
+    <label>Phone / Number <input id="number" type="tel" required></label>
+    <label>Email <input id="email" type="email" required></label>
+    <label>Payment Method
+      <select id="payment">
+        <option>Airtel Money</option>
+        <option>MTN Mobile Money</option>
+        <option>Zamtel Kwacha</option>
+        <option>Bank Transfer</option>
+      </select>
+    </label>
+  </div>
 </section>
 
 <section class="section">
-<h2>3. Submit</h2>
-
-<p>
-Submit your request. The administrator verifies payment before assigning account access.
-</p>
-
-<button type="submit" id="submitBtn">Submit Order</button>
-
-<div id="msg" class="msg"></div>
+  <h2>3. Submit</h2>
+  <button type="submit" id="submitBtn">Submit Order & Get Receipt</button>
 </section>
-
 </form>
 </div>
 
-<!-- 1. Load price list configuration first -->
-<script src="pricelist.js"></script>
+<!-- RECEIPT SECTION -->
+<div id="receiptBox" class="receipt">
+  <h2>Order Submitted Successfully! 🎉</h2>
+  <p><strong>Order ID:</strong> <span id="recId"></span></p>
+  <p><strong>Total Amount Due:</strong> <span id="recTotal" style="font-size:1.3rem;font-weight:800;color:#15803d"></span></p>
+  
+  <div class="pay-info">
+    <h3 style="margin-top:0">Payment Instructions</h3>
+    <p>Send mobile money payment to:</p>
+    <ul>
+      <li><strong>Airtel Money:</strong> 0979276543</li>
+      <li><strong>Account Name:</strong> Mwiza Kondowe</li>
+    </ul>
+    <small>Use your Order ID as the payment reference. Administrator will verify and assign account logins shortly.</small>
+  </div>
 
-<!-- 2. Calculation logic for the checkboxes -->
-<script>
-function calc(){
-  const selected = [...document.querySelectorAll("#services input:checked")];
-  const amount = selected.reduce((total, item) => total + Number(item.value), 0);
-  document.getElementById("total").textContent = "K" + amount;
-}
-</script>
+  <a href="login.html" class="btn">Sign In to Account</a>
+  <a href="dashboard.html" class="btn" style="background:#10152b">Go to Dashboard</a>
+</div>
+</div>
 
-<!-- 3. Firebase Auth & Firestore Submission Logic -->
 <script type="module">
-  import { auth, db } from "./firebase.js";
+  import { auth, db, collection, addDoc, onSnapshot } from "./firebase.js";
   import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   let currentUser = null;
-
-  // Auto-fill user email if signed in
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      currentUser = user;
-      const emailField = document.getElementById("email");
-      if (emailField && !emailField.value) {
-        emailField.value = user.email || "";
-      }
+  
+  onAuthStateChanged(auth, (u) => {
+    if (u) {
+      currentUser = u;
+      document.getElementById("email").value = u.email || "";
     }
   });
 
-  document.getElementById("signup").addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    const selected = [...document.querySelectorAll("#services input:checked")].map(x => ({
-      id: x.dataset.id,
-      name: x.dataset.name,
-      price: Number(x.value)
-    }));
-
-    if (!selected.length) {
-      alert("Select at least one service.");
+  // Fetch Live Prices from Firestore
+  onSnapshot(collection(db, "services"), (snapshot) => {
+    const container = document.getElementById("services");
+    if (snapshot.empty) {
+      container.innerHTML = "<p>No services currently configured.</p>";
       return;
     }
 
-    const submitBtn = document.getElementById("submitBtn");
-    const msg = document.getElementById("msg");
+    container.innerHTML = "";
+    snapshot.forEach(docSnap => {
+      const item = { id: docSnap.id, ...docSnap.data() };
+      container.innerHTML += `
+        <label class="service-item">
+          <input type="checkbox" value="${item.price}" data-id="${item.id}" data-name="${item.name}">
+          <div>
+            <strong>${item.name}</strong> <small style="color:#16a34a">(${item.ownership || 'Shared'})</small><br>
+            <small>K${item.price}</small>
+          </div>
+        </label>
+      `;
+    });
 
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Submitting...";
+    // Attach event listeners for dynamic price calculation
+    container.querySelectorAll("input[type='checkbox']").forEach(chk => {
+      chk.addEventListener("change", calc);
+    });
+  });
+
+  function calc(){
+    const selected = [...document.querySelectorAll("#services input:checked")];
+    document.getElementById("total").textContent = "K" + selected.reduce((t, x) => t + Number(x.value), 0);
+  }
+
+  document.getElementById("signup").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const selected = [...document.querySelectorAll("#services input:checked")].map(x => ({
+      id: x.dataset.id, name: x.dataset.name, price: Number(x.value)
+    }));
+
+    if (!selected.length) return alert("Select at least one service.");
+
+    const orderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
+    const total = selected.reduce((a, b) => a + b.price, 0);
 
     const orderData = {
-      orderId: "ORD-" + Date.now(),
+      orderId,
       userId: currentUser ? currentUser.uid : "guest",
       name: document.getElementById("name").value,
       number: document.getElementById("number").value,
       email: document.getElementById("email").value,
-      payment: document.getElementById("payment").value,
+      paymentMethod: document.getElementById("payment").value,
       services: selected,
-      total: selected.reduce((a, x) => a + x.price, 0),
-      status: "Pending verification",
+      total,
+      status: "Pending Verification",
+      assignedCredentials: "",
       createdAt: new Date().toISOString()
     };
 
     try {
-      // Save order to Firestore database
       await addDoc(collection(db, "orders"), orderData);
-
-      msg.style.display = "block";
-      msg.textContent = "Order submitted successfully! The administrator will verify payment and assign your subscription.";
-
-      setTimeout(() => {
-        window.location.href = "dashboard.html";
-      }, 2000);
-
-    } catch (error) {
-      console.error("Error submitting order:", error);
-      alert("Failed to submit order: " + error.message);
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Submit Order";
+      document.getElementById("orderForm").style.display = "none";
+      document.getElementById("receiptBox").style.display = "block";
+      document.getElementById("recId").textContent = orderId;
+      document.getElementById("recTotal").textContent = "K" + total;
+    } catch (err) {
+      alert("Error placing order: " + err.message);
     }
   });
 </script>
-
 </body>
 </html>
