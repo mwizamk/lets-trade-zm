@@ -1,121 +1,112 @@
 // admin.js
-import { auth, db } from "./firebase-config.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { collection, onSnapshot, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { 
+  db, 
+  auth, 
+  collection, 
+  doc, 
+  addDoc, 
+  updateDoc, 
+  deleteDoc, 
+  onSnapshot, 
+  query, 
+  where 
+} from "./firebase.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// REPLACE WITH YOUR ACTUAL ADMIN EMAIL
-const ADMIN_EMAIL = "your-admin-email@gmail.com";
-
-const ordersTable = document.getElementById("ordersTable");
-const priceTable = document.getElementById("priceTable");
-const customersCount = document.getElementById("customers");
-const ordersCount = document.getElementById("orders");
-const activeCount = document.getElementById("active");
-
-// 1. Guard route & check Auth status
-onAuthStateChanged(auth, (user) => {
-  if (!user || user.email !== ADMIN_EMAIL) {
-    window.location.href = "admin-login.html";
-  } else {
-    initAdminListeners();
-  }
-});
-
-// 2. Realtime Firestore Synchronization
-function initAdminListeners() {
-  // Synchronize Orders
-  onSnapshot(collection(db, "orders"), (snapshot) => {
-    const orders = [];
-    let active = 0;
-    const userIds = new Set();
-
-    snapshot.forEach((docSnap) => {
-      const order = { id: docSnap.id, ...docSnap.data() };
-      orders.push(order);
-      if (order.userId) userIds.add(order.userId);
-      if (order.status === "Approved") active++;
-    });
-
-    customersCount.textContent = userIds.size;
-    ordersCount.textContent = orders.length;
-    activeCount.textContent = active;
-
-    if (orders.length === 0) {
-      ordersTable.innerHTML = "<tr><td colspan='6'>No orders yet.</td></tr>";
-    } else {
-      ordersTable.innerHTML = orders.map(o => `
-        <tr>
-          <td>${o.id.substring(0, 6)}...</td>
-          <td>${o.name || 'N/A'}<br>${o.number || 'N/A'}</td>
-          <td>${Array.isArray(o.services) ? o.services.map(s => s.name).join("<br>") : (o.service || 'N/A')}</td>
-          <td>K${o.total || o.price || 0}</td>
-          <td><b>${o.status || 'Pending'}</b></td>
-          <td>
-            <button class="action" onclick="window.updateOrderStatus('${o.id}', 'Approved')">Approve</button>
-            <button class="action deny" onclick="window.updateOrderStatus('${o.id}', 'Denied')">Deny</button>
-          </td>
-        </tr>
-      `).join("");
+/**
+ * Verify if the logged-in user has admin privileges
+ * @param {Function} onSuccess Executed if admin verified
+ * @param {Function} onFailure Executed if non-admin or unauthenticated
+ */
+export function verifyAdminAccess(onSuccess, onFailure) {
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      if (onFailure) onFailure("Unauthenticated user");
+      return;
     }
-  });
 
-  // Synchronize Prices
-  onSnapshot(collection(db, "prices"), (snapshot) => {
-    const prices = [];
-    snapshot.forEach((docSnap) => {
-      prices.push({ id: docSnap.id, ...docSnap.data() });
+    // Check user role from Firestore 'users' collection
+    const userRef = doc(db, "users", user.uid);
+    onSnapshot(userRef, (snap) => {
+      if (snap.exists() && snap.data().role === "admin") {
+        if (onSuccess) onSuccess(user);
+      } else {
+        if (onFailure) onFailure("Access denied. Admin privileges required.");
+      }
     });
-
-    if (prices.length === 0) {
-      priceTable.innerHTML = "<tr><td colspan='3'>No custom prices added.</td></tr>";
-    } else {
-      priceTable.innerHTML = prices.map(p => `
-        <tr>
-          <td>${p.name}</td>
-          <td>K${p.price}</td>
-          <td><button class="action deny" onclick="window.deletePriceItem('${p.id}')">Delete</button></td>
-        </tr>
-      `).join("");
-    }
   });
 }
 
-// 3. Global Action Handlers (Accessible from HTML onclick)
-window.addPrice = async function() {
-  const nameInput = document.getElementById("pname");
-  const priceInput = document.getElementById("pprice");
-  const name = nameInput.value.trim();
-  const price = Number(priceInput.value);
+/**
+ * Real-time listener for customer orders
+ * @param {Function} renderCallback Callback function receiving orders array
+ */
+export function subscribeToOrders(renderCallback) {
+  return onSnapshot(collection(db, "orders"), (snapshot) => {
+    const orders = [];
+    snapshot.forEach((docSnap) => {
+      orders.push({ id: docSnap.id, ...docSnap.data() });
+    });
+    if (renderCallback) renderCallback(orders);
+  });
+}
 
-  if (!name || !price) return alert("Please enter a valid name and price.");
-
+/**
+ * Update the status and credentials of a customer order
+ * @param {string} orderDocId Firestore document ID
+ * @param {string} newStatus e.g. "Completed", "Pending", "Cancelled"
+ * @param {string} credentials Account login details/credentials to assign
+ */
+export async function updateOrderStatus(orderDocId, newStatus, credentials = "") {
   try {
-    const customId = name.toLowerCase().replace(/\s+/g, '_');
-    await setDoc(doc(db, "prices", customId), { name, price });
-    nameInput.value = "";
-    priceInput.value = "";
+    const orderRef = doc(db, "orders", orderDocId);
+    await updateDoc(orderRef, {
+      status: newStatus,
+      assignedCredentials: credentials,
+      updatedAt: new Date().toISOString()
+    });
+    return { success: true };
   } catch (err) {
-    alert("Error adding item: " + err.message);
+    console.error("Failed to update order:", err);
+    return { success: false, error: err.message };
   }
-};
+}
 
-window.updateOrderStatus = async function(orderId, status) {
+/**
+ * Delete a specific service from the catalog
+ * @param {string} serviceDocId Firestore document ID
+ */
+export async function removeServiceFromCatalog(serviceDocId) {
   try {
-    await updateDoc(doc(db, "orders", orderId), { status });
+    await deleteDoc(doc(db, "services", serviceDocId));
+    return { success: true };
   } catch (err) {
-    alert("Error updating order: " + err.message);
+    console.error("Failed to delete service:", err);
+    return { success: false, error: err.message };
   }
-};
+}
 
-window.deletePriceItem = async function(priceId) {
+/**
+ * Save or Update a service item in Firestore
+ * @param {Object} serviceData Service details object
+ * @param {string|null} docId Optional document ID for updates
+ */
+export async function saveCatalogService(serviceData, docId = null) {
   try {
-    await deleteDoc(doc(db, "prices", priceId));
-  } catch (err) {
-    alert("Error deleting item: " + err.message);
-  }
-};
+    const data = {
+      ...serviceData,
+      price: Number(serviceData.price),
+      updatedAt: new Date().toISOString()
+    };
 
-window.logout = async function() {
-  await signOut(auth);
-  window.location.href = "admin-login.html";
-};
+    if (docId) {
+      await updateDoc(doc(db, "services", docId), data);
+    } else {
+      await addDoc(collection(db, "services"), data);
+    }
+    return { success: true };
+  } catch (err) {
+    console.error("Failed to save service:", err);
+    return { success: false, error: err.message };
+  }
+}
