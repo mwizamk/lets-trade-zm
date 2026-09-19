@@ -6,39 +6,82 @@
 <meta name="description" content="Sign in to your Let's Trade ZM customer account.">
 <style>
 *{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:system-ui,sans-serif;background:#f7f3e8;color:#15162a;display:grid;place-items:center;padding:18px}
-.box{width:min(440px,100%);background:white;border:1px solid #ddd6c6;border-radius:22px;padding:26px;box-shadow:0 12px 35px #10152b12}.brand{font-size:1.5rem;font-weight:800;color:#193b35}.sub{color:#666;margin-top:3px}label{display:block;font-weight:700;margin:18px 0 7px}input{width:100%;padding:14px;border:1px solid #cfc9bb;border-radius:11px;font-size:1rem}button{width:100%;margin-top:20px;padding:14px;border:0;border-radius:11px;background:#193b35;color:white;font-weight:800;font-size:1rem;cursor:pointer}.msg{margin-top:14px;padding:11px;border-radius:10px;display:none}.back{display:block;text-align:center;margin-top:18px;color:#193b35;text-decoration:none}.note{font-size:.86rem;color:#666;margin-top:18px}
+.box{width:min(440px,100%);background:white;border:1px solid #ddd6c6;border-radius:22px;padding:26px;box-shadow:0 12px 35px #10152b12}.brand{font-size:1.5rem;font-weight:800;color:#193b35}.sub{color:#666;margin-top:3px}label{display:block;font-weight:700;margin:14px 0 5px}input{width:100%;padding:12px;border:1px solid #cfc9bb;border-radius:11px;font-size:1rem}button{width:100%;margin-top:18px;padding:13px;border:0;border-radius:11px;background:#193b35;color:white;font-weight:800;font-size:1rem;cursor:pointer}.btn-alt{background:#315f50;margin-top:8px}.msg{margin-top:14px;padding:11px;border-radius:10px;font-weight:600}.back{display:block;text-align:center;margin-top:18px;color:#193b35;text-decoration:none}
 </style>
 </head>
-<body><main class="box"><div class="brand">Let's Trade ZM</div><div class="sub">Customer sign in</div>
-<form id="loginForm"><label for="number">Customer number</label><input id="number" name="number" inputmode="tel" autocomplete="tel" placeholder="Enter your number" required><button type="submit">Sign In</button></form>
-<div id="msg" class="msg"></div><p class="note">Frontend prototype: real authentication will be connected when the backend is added.</p><a class="back" href="index.html">← Back to Let's Trade ZM</a>
+<body>
+<main class="box">
+  <div class="brand">Let's Trade ZM</div>
+  <div class="sub">Customer sign in</div>
+  <form id="loginForm">
+    <label for="email">Email Address</label>
+    <input id="email" type="email" placeholder="Enter your email" required>
+    
+    <label for="password">Password</label>
+    <input id="password" type="password" placeholder="Enter your password" required>
+    
+    <button type="submit" id="signInBtn">Sign In</button>
+    <button type="button" id="signUpBtn" class="btn-alt">Create Account</button>
+  </form>
+  <div id="msg" class="msg"></div>
+  <a class="back" href="index.html">← Back to Let's Trade ZM</a>
 </main>
-<script>
-  import { auth } from "./firebase-config.js";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// Register user
-export async function registerUser(email, password) {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    window.location.href = "dashboard.html";
-  } catch (error) {
-    console.error("Auth error:", error.message);
+<script type="module">
+  import { auth, db, doc, setDoc } from "./firebase.js";
+  import { 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword 
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+  const form = document.getElementById("loginForm");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const signUpBtn = document.getElementById("signUpBtn");
+  const msg = document.getElementById("msg");
+
+  function showMsg(text, isError = false) {
+    msg.style.display = "block";
+    msg.style.color = isError ? "#b91c1c" : "#15803d";
+    msg.textContent = text;
   }
-}
 
-// Login user
-export async function loginUser(email, password) {
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    window.location.href = "dashboard.html";
-  } catch (error) {
-    console.error("Login error:", error.message);
-  }
-}
+  // Handle Login
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    showMsg("Signing in…");
 
-const form=document.getElementById("loginForm"),msg=document.getElementById("msg");
-form.addEventListener("submit",e=>{e.preventDefault();const number=document.getElementById("number").value.trim();if(!number)return;localStorage.setItem("ltzm_current_number",number);msg.style.display="block";msg.textContent="Signing in…";setTimeout(()=>location.href="dashboard.html",300);});
+    try {
+      await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+      window.location.href = "dashboard.html";
+    } catch (error) {
+      showMsg(error.message, true);
+    }
+  });
+
+  // Handle Sign Up
+  signUpBtn.addEventListener("click", async () => {
+    if (!emailInput.value || !passwordInput.value) {
+      showMsg("Enter email and password to create an account.", true);
+      return;
+    }
+
+    showMsg("Creating account…");
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+      
+      // Save initial profile in Firestore
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        email: userCredential.user.email,
+        createdAt: new Date().toISOString()
+      });
+
+      window.location.href = "dashboard.html";
+    } catch (error) {
+      showMsg(error.message, true);
+    }
+  });
 </script>
 </body>
 </html>
